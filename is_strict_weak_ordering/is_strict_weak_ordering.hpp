@@ -2,8 +2,8 @@
 
 // refer to http://en.wikipedia.org/wiki/Strict_weak_ordering#Properties
 
-template<typename Iterator, typename Predicate>
-bool has_irreflexivity(Iterator first, Iterator last, Predicate pred)
+template<typename InputIterator, typename Predicate>
+bool has_irreflexivity(InputIterator first, InputIterator last, Predicate pred)
 {
   for(; first != last; ++first)
   {
@@ -13,12 +13,12 @@ bool has_irreflexivity(Iterator first, Iterator last, Predicate pred)
   return true;
 }
 
-template<typename Iterator, typename Predicate>
-bool has_asymmetry(Iterator first, Iterator last, Predicate pred)
+template<typename ForwardIterator, typename Predicate>
+bool has_asymmetry(ForwardIterator first, ForwardIterator last, Predicate pred)
 {
-  for(Iterator x = first; x != last; ++x)
+  for(ForwardIterator x = first; x != last; ++x)
   {
-    for(Iterator y = first; y != last; ++y)
+    for(ForwardIterator y = first; y != last; ++y)
     {
       if(x != y)
       {
@@ -33,16 +33,16 @@ bool has_asymmetry(Iterator first, Iterator last, Predicate pred)
   return true;
 }
 
-template<typename Iterator, typename Predicate>
-bool has_transitivity(Iterator first, Iterator last, Predicate pred)
+template<typename ForwardIterator, typename Predicate>
+bool has_transitivity(ForwardIterator first, ForwardIterator last, Predicate pred)
 {
-  for(Iterator x = first; x != last; ++x)
+  for(ForwardIterator x = first; x != last; ++x)
   {
-    for(Iterator y = first; y != last; ++y)
+    for(ForwardIterator y = first; y != last; ++y)
     {
       if(pred(*x,*y))
       {
-        for(Iterator z = first; z != last; ++z)
+        for(ForwardIterator z = first; z != last; ++z)
         {
           if(pred(*y,*z))
           {
@@ -56,16 +56,16 @@ bool has_transitivity(Iterator first, Iterator last, Predicate pred)
   return true;
 }
 
-template<typename Iterator, typename Predicate>
-bool has_transitivity_of_equivalence(Iterator first, Iterator last, Predicate pred)
+template<typename ForwardIterator, typename Predicate>
+bool has_transitivity_of_equivalence(ForwardIterator first, ForwardIterator last, Predicate pred)
 {
-  for(Iterator x = first; x != last; ++x)
+  for(ForwardIterator x = first; x != last; ++x)
   {
-    for(Iterator y = first; y != last; ++y)
+    for(ForwardIterator y = first; y != last; ++y)
     {
       if(pred(*x,*y))
       {
-        for(Iterator z = first; z != last; ++z)
+        for(ForwardIterator z = first; z != last; ++z)
         {
           if(!(pred(*x,*z) || pred(*z,*y))) return false;
         }
@@ -76,9 +76,8 @@ bool has_transitivity_of_equivalence(Iterator first, Iterator last, Predicate pr
   return true;
 }
 
-template<typename Iterator, typename Predicate>
-bool is_strict_weak_ordering(Iterator first, Iterator last, Predicate pred)
+template<typename ForwardIterator, typename Predicate>
+bool is_strict_weak_ordering(ForwardIterator first, ForwardIterator last, Predicate pred)
 {
   return has_irreflexivity(first,last,pred) && has_asymmetry(first,last,pred) && has_transitivity(first,last,pred) && has_transitivity_of_equivalence(first,last,pred);
 }
-
