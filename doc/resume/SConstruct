@@ -1,0 +1,4 @@
+images = PDF('images.tex')
+resume = PDF('resume.tex')
+cv = PDF('hoberock-cv.tex')
+Depends(cv, [images,resume])

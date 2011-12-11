@@ -1,0 +1,204 @@
+\documentclass[margin,line]{res}
+
+\usepackage{pdfpages}
+%\usepackage{helvetica}
+
+\oddsidemargin -.5in
+\evensidemargin -.5in
+\textwidth=6.0in
+\itemsep=0in
+\parsep=0in
+
+\newenvironment{list1}{
+  \begin{list}{\ding{113}}{%
+      \setlength{\itemsep}{0in}
+      \setlength{\parsep}{0in} \setlength{\parskip}{0in}
+      \setlength{\topsep}{0in} \setlength{\partopsep}{0in}
+      \setlength{\leftmargin}{0.17in}}}{\end{list}}
+\newenvironment{list2}{
+  \begin{list}{$\bullet$}{%
+      \setlength{\itemsep}{0in}
+      \setlength{\parsep}{0in} \setlength{\parskip}{0in}
+      \setlength{\topsep}{0in} \setlength{\partopsep}{0in}
+      \setlength{\leftmargin}{0.2in}}}{\end{list}}
+
+
+\begin{document}
+
+\vspace*{-1.75cm}
+\name{Jared Hoberock \vspace*{.1in}}
+
+\begin{resume}
+\section{\sc Contact Information}
+\vspace{.05in}
+%\begin{tabular}{@{}p{2in}p{4in}}
+%Siebel Center 3301             & {\it Voice:}  (417) 684-0191 \\
+%Department of Computer Science   & {\it E-mail:}  jaredhoberock@gmail.com \\
+%University of Illinois Urbana-Champaign & \\
+%201 N. Goodwin  &  \\
+%Urbana, IL  61801 &
+%\begin{tabular}{@{}p{2in}p{2in}}
+%jaredhoberock@gmail.com & Siebel Center  \\
+%(417) 684-0191          & 201 N. Goodwin \\
+%                        & Urbana, IL  61801 \\
+
+%\begin{tabular}{@{}l|l|l}
+%%voice: (417) 684-0191 & email: \texttt{jaredhoberock [at] gmail [dot] com} & online: \texttt{http://jaredhoberock.com} \\
+%(417) 684-0191 & \texttt{jaredhoberock [at] gmail [dot] com} & \texttt{http://jaredhoberock.com} \\
+%\end{tabular}
+
+\begin{tabular}{@{}l|l}
+(417) 684-0191 & \texttt{jaredhoberock [at] gmail [dot] com} \\
+\end{tabular}
+
+\section{\sc Professional Interests}
+The novel application of parallel architectures to all aspects of rendering
+
+\section{\sc Education}
+{\bf University of Illinois Urbana-Champaign}, Urbana, Illinois\\
+Ph.D., Computer Science, August 2008
+%Currently pursuing a Ph.D in Computer Science
+%\vspace{-.1in}
+%\begin{list1}
+%\item[]{Currently pursuing a Ph.D in Computer Science}
+%\begin{list2}
+%\vspace*{.05in} \item Primary Research Area: Computer Graphics
+%\item Advisor: John C. Hart
+%\end{list2}
+%\end{list1}
+
+%{\bf University of Illinois Urbana-Champaign}, Urbana, Illinois\\
+%M.S., Computer Science, 2004
+%%{\em Department of Computer Science}
+%%\vspace*{-.1in}
+%%\begin{list1}
+%%\item[] M.S., Computer Science, December, 2004
+%%\begin{list2}
+%%\vspace*{.05in} \item Thesis Topic:  ``The Visibility 2-Skeleton''
+%% \item Advisor:  John C.
+%%Hart
+%%\end{list2}
+%%\end{list1}
+
+{\bf University of Missouri-Columbia}, Columbia, Missouri\\
+B.S., Computer Engineering, 2002, \em Summa Cum Laude\em
+%{\em Department of Computer Engineering & Computer Science}
+%\vspace*{-.1in}
+%\begin{list1}
+%\item[] B.S., Computer Engineering, May, 2002
+%\end{list1}
+
+\section{\sc Professional Experience}
+{\bf NVIDIA Corporation}, Santa Clara, California\\
+%\vspace{-.3cm}
+{\em Research Scientist} \hfill {\bf October 2008 - Current}\\
+Member of the NVIDIA Research team: \vspace*{.05in}
+\begin{list2}
+\item Development team member of OptiX, a software platform for parallel ray tracing
+\item Co-developer of Thrust, a codified approach to programming massively parallel processors
+\end{list2}
+
+{\bf University of Illinois Urbana-Champaign}, Urbana, Illinois
+
+\vspace{-.3cm}
+{\em Research Assistant in Computer Graphics} \hfill {\bf August, 2002 - August, 2008}\\
+Developed novel parallel algorithms for rendering global illumination.
+%in: \vspace*{.05in}
+%\begin{list2}
+%\item High-quality rendering
+%\item Acceleration of ray casting
+%\item Analytic visibility
+%\item Real-time shadows
+%\end{list2}
+
+{\bf NVIDIA Corporation}, Santa Clara, California\\
+%\vspace{-.3cm}
+{\em Research Intern} \hfill {\bf May 2007 - August 2007}\\
+Worked with the NVIDIA Research team: \vspace*{.05in}
+\begin{list2}
+\item Investigated unique applications of massively parallel processors to ray tracing
+\item Researched techniques for eliminating incoherent behavior unique to graphics applications
+\end{list2}
+
+{\bf NVIDIA Corporation}, Berkeley, California\\
+%\vspace{-.3cm}
+{\em Film Team Intern} \hfill {\bf May 2006 - August 2006}\\
+Worked with the Gelato Final Frame Renderer team: \vspace*{.05in}
+\begin{list2}
+\item Investigated new GPU-assisted production quality rendering techniques
+\item Developed new GPU-based fast render preview features
+\end{list2}
+
+%{\bf NVIDIA Corporation}, Santa Clara, California\\
+%%\vspace{-.3cm}
+%{\em Graphics Drivers Intern} \hfill {\bf May 2005 - August 2005}\\
+%Worked with the DirectX graphics drivers team: \vspace*{.05in}
+%\begin{list2}
+%\item Diagnosed and fixed bugs
+%\item Developed new driver for next generation hardware
+%\end{list2}
+
+%{\bf University of Missouri-Columbia}, Columbia, Missouri USA
+%
+%\vspace{-.3cm}
+%{\em Research Assistant in Visualization} \hfill {\bf August, 2001 - August, 2002}\\
+%Assisted in development of a visualizer for high-resolution remote
+%sensing data: \vspace*{.05in}
+%\begin{list2}
+%\item Implemented techniques in image compression \item
+%Implemented techniques in parallel I/O
+%\end{list2}
+%
+%{\bf Boeing Military Aircraft \& Missile Systems}, Saint Louis,
+%Missouri USA
+%
+%\vspace{-.3cm} {\em Software Engineering Intern} \hfill {\bf May,
+%2001 - August 2001}\\
+%Interned with the F/A-18 Military Aircraft Advanced Displays Team:
+%\vspace*{.05in}
+%\begin{list2}
+%\item Ported a rapid-prototyping development tool for avionics
+%displays
+%\end{list2}
+
+\section{\sc Honors and Awards}
+NVIDIA Fellowship Recipient, 2007
+
+\vspace*{-2.5mm}
+NVIDIA Fellowship Recipient, 2005
+
+%\vspace*{-2.5mm}
+%University of Missouri-Columbia: graduated \em Summa Cum Laude\em,
+%2002
+
+%\vspace*{-2.5mm} Boeing Scholarship for Computer Engineering, 2001
+
+\vspace*{-2.5mm} National Merit Scholar, 1998
+
+\section{\sc Publications}
+J. Hoberock and J. C. Hart.
+Importance Sampled Metropolis Light Transport, January, 2008.
+
+\vspace{-.275cm}
+J. Hoberock and Y. Jia.
+High-Quality Ambient Occlusion, GPU Gems 3, August, 2007.
+
+\vspace{-.275cm}
+N. Carr, J. Hoberock, K. Crane, and J. C. Hart.
+Rectangular Multi-chart Geometry Images, Eurographics Symposium
+on Geometry Processing, June, 2006.
+
+\vspace{-.275cm}
+N. Carr, J. Hoberock, K. Crane, and J. C. Hart. Fast
+GPU Ray Tracing of Dynamic Meshes using Geometry Images, Graphics
+Interface, June, 2006.
+
+\vspace{-.275cm}
+S. Hornus, J. Hoberock, S. Levebvre, and J. C. Hart.
+ZP+: Correct Z-Pass Stencil Shadows, ACM Symposium on 3D
+Graphics and Games, April, 2005.
+
+\end{resume}
+
+\end{document}
+
