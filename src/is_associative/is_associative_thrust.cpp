@@ -2,6 +2,7 @@
 #include <thrust/system/tbb/vector.h>
 #include <thrust/logical.h>
 #include <algorithm>
+#include <iostream>
 
 // see http://en.wikipedia.org/wiki/Associativity#Definition
 
@@ -40,9 +41,6 @@ int main()
 
   // floating point addition is not necessarily associative
   std::cout << "is_associative(float,plus): " << is_associative(float_vec.begin(), float_vec.end(), std::plus<float>()) << std::endl;
-
-  // floating point addition may be "fuzzy" associative
-  std::cout << "is_associative(float,plus,fuzzy_equals): " << is_associative(float_vec.begin(), float_vec.end(), std::plus<float>(), fuzzy_equals) << std::endl;;
 
   return 0;
 }
