@@ -10,12 +10,12 @@ template<typename ForwardIterator, typename BinaryFunction>
 {
   using namespace thrust;
 
-  typedef typename thrust::iterator_value<ForwardIterator>::type value_type;
+  typedef typename iterator_value<ForwardIterator>::type value_type;
   
-  return all_of(first, last, [op,equals](value_type x){
-    all_of(first, last, [x,op,equals](value_type y){
-      all_of(first, last, [x,y,op,equals](value_type z){
-        return op(op(x,y), z) == op(x, op(y,z))
+  return all_of(first, last, [op](value_type x){
+    all_of(first, last, [x,op](value_type y){
+      all_of(first, last, [x,y,op](value_type z){
+        return op(op(x,y), z) == op(x, op(y,z));
       });
     });
   });
