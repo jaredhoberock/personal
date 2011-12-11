@@ -1,5 +1,6 @@
 #include <thrust/system/tbb/vector.h>
 #include <thrust/logical.h>
+#include <algorithm>
 
 // see http://en.wikipedia.org/wiki/Associativity#Definition
 
