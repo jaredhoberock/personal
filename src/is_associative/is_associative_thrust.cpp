@@ -1,3 +1,4 @@
+#include <thrust/iterator/iterator_traits.h>
 #include <thrust/system/tbb/vector.h>
 #include <thrust/logical.h>
 #include <algorithm>
@@ -8,6 +9,8 @@ template<typename ForwardIterator, typename BinaryFunction>
   bool is_associative(ForwardIterator first, ForwardIterator last, BinaryFunction op)
 {
   using namespace thrust;
+
+  typedef typename thrust::iterator_value<ForwardIterator>::type value_type;
   
   return all_of(first, last, [op,equals](value_type x){
     all_of(first, last, [x,op,equals](value_type y){
