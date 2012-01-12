@@ -1,5 +1,7 @@
 #include <type_traits>
 #include <utility>
+#include "conversion.hpp"
+#include "integer_series.hpp"
 
 template<typename T> struct marshal_me
 {
@@ -9,30 +11,6 @@ template<typename T> struct marshal_me
 
 namespace detail
 {
-
-// a series of integers
-template<unsigned int... Integers> struct integer_series {};
-
-template<unsigned int Next, typename> struct concat_integer;
-
-template<unsigned int Next, unsigned int... Integers>
-  struct concat_integer<Next, integer_series<Integers...>>
-{
-  typedef integer_series<Integers..., Next> type;
-};
-
-template<unsigned int Size> struct make_integer_series;
-
-template<> struct make_integer_series<0> { typedef integer_series<> type; };
-
-template<unsigned int Size>
-  struct make_integer_series
-{
-  typedef typename concat_integer<
-    Size-1,
-    typename make_integer_series<Size-1>::type
-  >::type type;
-};
 
 template<unsigned int i, typename Function, typename IntegerSeries>
   class parameter_needs_marshaling_impl;
@@ -44,19 +22,8 @@ template<unsigned int i, typename Function, unsigned int... Integers>
   typedef struct { char array[2]; } no_type;
 
   struct only_converts_to_marshal_me
-  {
-    template<typename T> operator marshal_me<T> & () const;
-    template<typename T> operator const marshal_me<T> & () const;
-
-    only_converts_to_marshal_me() = delete;
-    only_converts_to_marshal_me(const only_converts_to_marshal_me &) = delete;
-  };
-  
-  struct converts_to_anything
-  {
-    template<typename T> operator T & () const;
-    template<typename T> operator const T & () const;
-  };
+    : only_converts_to_template1<marshal_me>
+  {};
 
   // returns converts_to_anything when i != this_idx
   template<int inspect_idx, int this_idx>
@@ -103,8 +70,57 @@ template<unsigned int i, typename Function, typename... Args>
         detail::parameter_needs_marshaling_impl<
           i,
           Function,
-          typename detail::make_integer_series<sizeof...(Args)>::type
+          typename make_integer_series<sizeof...(Args)>::type
         >::value
       >
 {};
+
+
+// unit tests
+namespace detail
+{
+namespace parameter_needs_marshaling_detail
+{
+
+struct needs_marshaling
+{
+  void operator()(marshal_me<int> &x);
+};
+
+struct doesnt_need_marshaling
+{
+  void operator()(int x);
+};
+
+struct has_template
+{
+  template<typename T>
+  void operator()(T x);
+};
+
+struct bar {};
+
+struct foo
+{
+  void operator()(int x, bar y, marshal_me<bar> &z);
+};
+
+void baz(int x, marshal_me<bar> &y, const marshal_me<int> &z);
+
+static_assert(parameter_needs_marshaling<0,needs_marshaling,int>::value == true, "error with needs_marshaling");
+
+static_assert(parameter_needs_marshaling<0,doesnt_need_marshaling,int>::value == false, "error with doesnt_need_marshaling");
+
+static_assert(parameter_needs_marshaling<0,has_template,int>::value == false, "error with has_template");
+
+static_assert(parameter_needs_marshaling<0,foo,int,bar,bar>::value == false, "error with parm 0 of foo");
+static_assert(parameter_needs_marshaling<1,foo,int,bar,bar>::value == false, "error with parm 1 of foo");
+static_assert(parameter_needs_marshaling<2,foo,int,bar,bar>::value == true,  "error with parm 2 of foo");
+
+static_assert(parameter_needs_marshaling<0,decltype(baz),int,bar,int>::value == false, "error with parm 0 of baz");
+static_assert(parameter_needs_marshaling<1,decltype(baz),int,bar,int>::value == true,  "error with parm 1 of baz");
+static_assert(parameter_needs_marshaling<2,decltype(baz),int,bar,int>::value == true,  "error with parm 2 of baz");
+
+} // end parameter_needs_marshaling_detail
+} // end detail
 
