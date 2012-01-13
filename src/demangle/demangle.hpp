@@ -2,6 +2,7 @@
 
 // see http://gcc.gnu.org/onlinedocs/libstdc++/manual/ext_demangling.html
 
+#include <string>
 #include <cxxabi.h>
 
 std::string demangle(const std::string &mangled)
