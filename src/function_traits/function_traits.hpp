@@ -4,6 +4,37 @@
 
 template<typename... T> struct type_list {};
 
+template<typename> struct type_list_head;
+
+template<typename Head, typename... Tail>
+  struct type_list_head<type_list<Head,Tail...>>
+{
+  typedef Head type;
+};
+
+template<typename> struct type_list_tail;
+
+template<typename Head, typename... Tail>
+  struct type_list_tail<type_list<Head, Tail...>>
+{
+  typedef type_list<Tail...> type;
+};
+
+
+template<unsigned int i, typename> struct type_list_element;
+
+template<typename Head, typename... Tail>
+  struct type_list_element<0, type_list<Head, Tail...>>
+{
+  typedef Head type;
+};
+
+template<unsigned int i, typename Head, typename... Tail>
+  struct type_list_element<i, type_list<Head, Tail...>>
+    : type_list_element<i-1, type_list<Tail...>>
+{};
+
+
 // in general, assume a functor
 template<typename Function>
   struct function_signature
@@ -16,7 +47,6 @@ template<typename Function>
 template<typename Result, typename... Args>
   struct function_signature<Result(*)(Args...)>
 {
-  // just use a type list for now
   typedef type_list<Result,Args...> type;
 };
 
@@ -24,13 +54,34 @@ template<typename Result, typename... Args>
 template<typename Result, typename Class, typename... Args>
   struct function_signature<Result(Class::*)(Args...)>
 {
-  // just use a type list for now
   typedef type_list<Result,Args...> type;
 };
 
+template<typename Function>
+  struct function_result
+    : type_list_head<
+        typename function_signature<Function>::type
+      >
+{};
+
+template<typename Function>
+  struct function_parameters
+    : type_list_tail<
+        typename function_signature<Function>::type
+      >
+{};
+
+template<unsigned int i, typename Function>
+  struct function_parameter
+    : type_list_element<
+        i,
+        typename function_parameters<Function>::type
+      >
+{};
+
 namespace detail
 {
-namespace function_signature_detail
+namespace function_traits_detail
 {
 
 struct bar {};
@@ -40,8 +91,37 @@ struct test1
   int operator()(bar);
 };
 
-//static_assert(std::is_same<function_signature<test1>, type_list<int,bar>>::value, "problem with test1");
+static_assert(std::is_same<function_signature<test1>::type, type_list<int,bar>>::value, "problem with test1");
 
-} // end function_signature_detail
+
+struct test2
+{
+  int operator()(int, bar);
+};
+
+static_assert(std::is_same<function_result<test2>::type, int>::value, "problem with test2");
+static_assert(std::is_same<function_parameters<test2>::type, type_list<int,bar>>::value, "problem with test2");
+
+
+struct test3
+{
+  int operator()();
+};
+
+static_assert(std::is_same<function_parameters<test3>::type, type_list<>>::value, "problem with test3");
+
+
+struct test4
+{
+  void operator()(int, float, double, char);
+};
+
+static_assert(std::is_same<function_parameter<0,test4>::type, int>::value, "problem with test4");
+static_assert(std::is_same<function_parameter<1,test4>::type, float>::value, "problem with test4");
+static_assert(std::is_same<function_parameter<2,test4>::type, double>::value, "problem with test4");
+static_assert(std::is_same<function_parameter<3,test4>::type, char>::value, "problem with test4");
+
+
+} // end function_traits_detail
 } // end detail
 
