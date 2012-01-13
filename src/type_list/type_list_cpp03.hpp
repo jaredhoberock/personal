@@ -2,6 +2,14 @@
 
 struct null_type {};
 
+template<typename T>
+  struct identity_if_not_null
+{
+  typedef T type;
+};
+
+template<> struct identity_if_not_null<null_type> {};
+
 template<
   typename T0 = null_type,
   typename T1 = null_type, typename T2 = null_type, typename T3 = null_type,
@@ -49,9 +57,8 @@ template<
   typename T7, typename T8, typename T9
 >
   struct type_list_element<0, type_list<Head,T1,T2,T3,T4,T5,T6,T7,T8,T9> >
-{
-  typedef Head type;
-};
+    : identity_if_not_null<Head>
+{};
 
 template<
   unsigned int i,
