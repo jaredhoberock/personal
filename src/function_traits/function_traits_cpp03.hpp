@@ -127,3 +127,25 @@ template<typename Result, typename Class, typename Arg1, typename Arg2, typename
   typedef type_list<Result,Arg1,Arg2,Arg3,Arg4,Arg5,Arg6,Arg7,Arg8,Arg9> type;
 };
 
+template<typename Function>
+  struct function_result
+    : type_list_head<
+        typename function_signature<Function>::type
+      >
+{};
+
+template<typename Function>
+  struct function_parameters
+    : type_list_tail<
+        typename function_signature<Function>::type
+      >
+{};
+
+template<unsigned int i, typename Function>
+  struct function_parameter
+    : type_list_element<
+        i,
+        typename function_parameters<Function>::type
+      >
+{};
+
