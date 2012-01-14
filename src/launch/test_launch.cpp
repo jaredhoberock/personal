@@ -1,4 +1,6 @@
 #include "launch.hpp"
+#include "shared.hpp"
+#include <iostream>
 
 struct bar
 {
