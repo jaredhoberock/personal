@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include "shared.hpp"
 
 class shared_storage_requirements_calculator
 {
