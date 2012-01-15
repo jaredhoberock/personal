@@ -3,7 +3,7 @@
 #include <iostream>
 
 template<typename Function, typename... Args>
-  void launch(Function &&f, Args&&... args)
+  void launch(std::size_t num_blocks, std::size_t num_threads_per_block, Function &&f, Args&&... args)
 {
   shared_storage_requirements_calculator calc;
 
