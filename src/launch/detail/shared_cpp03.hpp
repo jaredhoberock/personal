@@ -8,6 +8,13 @@
 template<typename T>
   class shared
 {
+  public:
+    __host__ __device__
+    T &get() const
+    {
+      return *ptr;
+    }
+
   private:
     shared(const shared &);
     shared();

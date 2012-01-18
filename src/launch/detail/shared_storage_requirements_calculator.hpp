@@ -3,14 +3,15 @@
 #include <cstddef>
 #include "../shared.hpp"
 #include "launch_core_access.hpp"
+#include <vector>
 
 class shared_storage_requirements_calculator
 {
   public:
+    typedef std::vector<std::size_t> result_type;
+
     shared_storage_requirements_calculator()
-      : m_total_num_arguments(),
-        m_num_arguments_inspected(),
-        m_shared_storage_size()
+      : m_result()
     {}
 
     template<typename Arg>
@@ -22,6 +23,8 @@ class shared_storage_requirements_calculator
 
       operator const Arg& () const
       {
+        m_calc.encountered_thread_local<Arg>();
+
         return m_arg;
       }
 
@@ -53,7 +56,7 @@ class shared_storage_requirements_calculator
 
 #if defined(__GCC_EXPERIMENTAL_CXX0X__)
     template<typename Function, typename... Args>
-      std::size_t calculate(Function f, Args&&... args)
+      result_type calculate(Function f, Args&&... args)
     {
       reset(sizeof...(Args));
 
@@ -64,11 +67,11 @@ class shared_storage_requirements_calculator
       }
       catch(...) {}
 
-      return m_shared_storage_size;
+      return m_result;
     }
 #else
     template<typename Function, typename Arg1>
-      std::size_t calculate(Function f, const Arg1 &arg1)
+      result_type calculate(Function f, const Arg1 &arg1)
     {
       reset(1);
 
@@ -79,11 +82,11 @@ class shared_storage_requirements_calculator
       }
       catch(...) {}
 
-      return m_shared_storage_size;
+      return m_result;
     }
 
     template<typename Function, typename Arg1, typename Arg2>
-      std::size_t calculate(Function f, const Arg1 &arg1, const Arg2 &arg2)
+      result_type calculate(Function f, const Arg1 &arg1, const Arg2 &arg2)
     {
       reset(2);
 
@@ -94,11 +97,11 @@ class shared_storage_requirements_calculator
       }
       catch(...) {}
 
-      return m_shared_storage_size;
+      return m_result;
     }
 
     template<typename Function, typename Arg1, typename Arg2, typename Arg3>
-      std::size_t calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3)
+      result_type calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3)
     {
       reset(3);
 
@@ -109,11 +112,11 @@ class shared_storage_requirements_calculator
       }
       catch(...) {}
 
-      return m_shared_storage_size;
+      return m_result;
     }
 
     template<typename Function, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
-      std::size_t calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4)
+      result_type calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4)
     {
       reset(4);
 
@@ -124,11 +127,11 @@ class shared_storage_requirements_calculator
       }
       catch(...) {}
 
-      return m_shared_storage_size;
+      return m_result;
     }
 
     template<typename Function, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
-      std::size_t calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4, const Arg5 &arg5)
+      result_type calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4, const Arg5 &arg5)
     {
       reset(5);
 
@@ -139,11 +142,11 @@ class shared_storage_requirements_calculator
       }
       catch(...) {}
 
-      return m_shared_storage_size;
+      return m_result;
     }
 
     template<typename Function, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6>
-      std::size_t calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4, const Arg5 &arg5, const Arg6 &arg6)
+      result_type calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4, const Arg5 &arg5, const Arg6 &arg6)
     {
       reset(6);
 
@@ -154,11 +157,11 @@ class shared_storage_requirements_calculator
       }
       catch(...) {}
 
-      return m_shared_storage_size;
+      return m_result;
     }
 
     template<typename Function, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6, typename Arg7>
-      std::size_t calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4, const Arg5 &arg5, const Arg6 &arg6, const Arg7 &arg7)
+      result_type calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4, const Arg5 &arg5, const Arg6 &arg6, const Arg7 &arg7)
     {
       reset(7);
 
@@ -175,11 +178,11 @@ class shared_storage_requirements_calculator
       }
       catch(...) {}
 
-      return m_shared_storage_size;
+      return m_result;
     }
 
     template<typename Function, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6, typename Arg7, typename Arg8>
-      std::size_t calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4, const Arg5 &arg5, const Arg6 &arg6, const Arg7 &arg7, const Arg8 &arg8)
+      result_type calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4, const Arg5 &arg5, const Arg6 &arg6, const Arg7 &arg7, const Arg8 &arg8)
     {
       reset(8);
 
@@ -197,11 +200,11 @@ class shared_storage_requirements_calculator
       }
       catch(...) {}
 
-      return m_shared_storage_size;
+      return m_result;
     }
 
     template<typename Function, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6, typename Arg7, typename Arg8, typename Arg9>
-      std::size_t calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4, const Arg5 &arg5, const Arg6 &arg6, const Arg7 &arg7, const Arg8 &arg8, const Arg9 &arg9)
+      result_type calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4, const Arg5 &arg5, const Arg6 &arg6, const Arg7 &arg7, const Arg8 &arg8, const Arg9 &arg9)
     {
       reset(9);
 
@@ -220,11 +223,11 @@ class shared_storage_requirements_calculator
       }
       catch(...) {}
 
-      return m_shared_storage_size;
+      return m_result;
     }
 
     template<typename Function, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6, typename Arg7, typename Arg8, typename Arg9, typename Arg10>
-      std::size_t calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4, const Arg5 &arg5, const Arg6 &arg6, const Arg7 &arg7, const Arg8 &arg8, const Arg9 &arg9, const Arg10 &arg10)
+      result_type calculate(Function f, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4, const Arg5 &arg5, const Arg6 &arg6, const Arg7 &arg7, const Arg8 &arg8, const Arg9 &arg9, const Arg10 &arg10)
     {
       reset(10);
 
@@ -244,35 +247,42 @@ class shared_storage_requirements_calculator
       }
       catch(...) {}
 
-      return m_shared_storage_size;
+      return m_result;
     }
 #endif
 
   private:
     void reset(std::size_t num_args)
     {
-      m_total_num_arguments = num_args;
-      m_num_arguments_inspected = 0;
-      m_shared_storage_size = 0;
+      m_result.clear();
+      m_result.reserve(num_args);
     }
 
     // when encountering shared<T>, accumulate
     template<typename T>
       void encountered_shared()
     {
-      m_shared_storage_size += sizeof(T);
-      ++m_num_arguments_inspected;
+      m_result.push_back(sizeof(T));
 
       // bail out if we're done converting
-      if(m_num_arguments_inspected == m_total_num_arguments)
+      if(m_result.size() == m_result.capacity())
       {
-        std::cout << "bailing out" << std::endl;
         throw 13;
       }
     }
 
-    std::size_t m_total_num_arguments;
-    std::size_t m_num_arguments_inspected;
-    std::size_t m_shared_storage_size;
+    template<typename T>
+      void encountered_thread_local()
+    {
+      m_result.push_back(0);
+
+      // bail out if we're done converting
+      if(m_result.size() == m_result.capacity())
+      {
+        throw 13;
+      }
+    }
+
+    result_type m_result;
 };
 
