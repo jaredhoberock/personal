@@ -35,7 +35,7 @@ template<typename T>
         ::new(static_cast<void*>(ptr)) T();
       } // end if
 
-      __syncthreads();
+      this_thread_group::wait();
     }
 
     template<typename Arg>
@@ -49,7 +49,7 @@ template<typename T>
         ::new(static_cast<void*>(ptr)) T(arg);
       } // end if
 
-      __syncthreads();
+      this_thread_group::wait();
     }
 
     template<typename Tuple>
@@ -63,21 +63,19 @@ template<typename T>
         tuple_placement_new<T>(static_cast<void*>(ptr), ma.args());
       } // end if
 
-      __syncthreads();
+      this_thread_group::wait();
     }
 
     __host__ __device__
     ~shared()
     {
-#if __CUDA_ARCH__
-      __syncthreads();
+      this_thread_group::wait();
 
       if(this_thread_group::get_thread_id() == 0)
       {
         // destroy the object
         ptr->~T();
       } // end if
-#endif // __CUDA_ARCH__
     }
 
     T *ptr;
