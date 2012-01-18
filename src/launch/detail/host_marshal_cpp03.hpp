@@ -4,6 +4,7 @@
 
 #include "device_marshal.hpp"
 #include "shared_storage_requirements_calculator.hpp"
+#include "this_thread_group.hpp"
 #include <numeric>
 #include <thrust/reduce.h>
 #include <thrust/scan.h>
@@ -70,15 +71,25 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
                     shared_storage_requirements_calculator::result_type storage_requirements,
                     Function f, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
 {
-  std::size_t num_dynamic_smem_bytes = thrust::reduce(storage_requirements.begin(),storage_requirements.end());
+  // compute storage requirements for runtime
+  std::size_t num_runtime_bytes = this_thread_group::detail::runtime_dynamic_shared_storage_requirements(num_threads_per_block);
+  
+  // compute storage requirements for parms
+  std::size_t num_parm_bytes = thrust::reduce(storage_requirements.begin(),storage_requirements.end());
 
+  // the number of dynamically-allocated smem bytes we need
+  // is the sum of the runtime's requirements and the requirements of the kernel parameters
+  std::size_t num_dynamic_smem_bytes = num_runtime_bytes + num_parm_bytes;
+
+  // exclusive scan the parameter storage requirements to find each parameter's offset
   thrust::exclusive_scan(storage_requirements.begin(),storage_requirements.end(),storage_requirements.begin());
 
+  // launch the runtime
   device_marshal<<<num_blocks,num_threads_per_block,num_dynamic_smem_bytes>>>(f,
-                                                                              arg1,storage_requirements[0],
-                                                                              arg2,storage_requirements[1],
-                                                                              arg3,storage_requirements[2],
-                                                                              arg4,storage_requirements[3]);
+                                                                              arg1,num_runtime_bytes + storage_requirements[0],
+                                                                              arg2,num_runtime_bytes + storage_requirements[1],
+                                                                              arg3,num_runtime_bytes + storage_requirements[2],
+                                                                              arg4,num_runtime_bytes + storage_requirements[3]);
 } // end launch()
 
 
