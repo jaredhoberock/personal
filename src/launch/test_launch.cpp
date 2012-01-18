@@ -20,13 +20,15 @@ struct bar
   bar(const bar &other)
     : x(other.x), y(other.y), z(other.z)
   {
-    printf("thread %d inside copy constructor with this = (%f,%f,%f)\n", this_thread_group::get_thread_id(), x, y, z);
+    unsigned int id = this_thread_group::get_thread_id();
+    printf("thread %u inside copy constructor with this = (%f,%f,%f)\n", id, x, y, z);
   }
 
   __host__ __device__
   ~bar()
   {
-    printf("thread %d inside destructor\n", this_thread_group::get_thread_id());
+    unsigned int id = this_thread_group::get_thread_id();
+    printf("thread %d inside destructor\n", id);
   }
 };
 
@@ -45,7 +47,8 @@ int main()
 {
   foo functor;
   launch(3, 4, functor, 10., 13.f, 13, bar(1,2,3));
-  cudaThreadSynchronize();
+  cudaError_t err = cudaThreadSynchronize();
+  std::cout << "CUDA error: " << cudaGetErrorString(err) << std::endl;
 
   return 0;
 }

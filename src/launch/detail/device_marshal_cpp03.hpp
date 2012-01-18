@@ -16,9 +16,6 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
                                  Arg3 arg3, std::size_t shared_offset3,
                                  Arg4 arg4, std::size_t shared_offset4)
 {
-  // initialize the runtime
-  this_thread_group::detail::set_id(threadIdx.x);
-
   // execute the kernel
   launch_core_access::device_marshal(f,
                                      arg1, shared_offset1,

@@ -4,6 +4,7 @@
 #include <thrust/tuple.h>
 #include "marshaled_args.hpp"
 #include "tuple_placement_new.hpp"
+#include "../this_thread_group.hpp"
 
 template<typename T>
   class shared
@@ -42,7 +43,7 @@ template<typename T>
       shared(void *p, const Arg &arg)
         : ptr(reinterpret_cast<T*>(p))
     {
-      if(threadIdx.x == 0)
+      if(this_thread_group::get_thread_id() == 0)
       {
         // construct the object given the arg
         ::new(static_cast<void*>(ptr)) T(arg);
@@ -56,7 +57,7 @@ template<typename T>
       shared(const detail::marshaled_args<Tuple> &ma)
         : ptr(reinterpret_cast<T*>(ma.ptr()))
     {
-      if(threadIdx.x == 0)
+      if(this_thread_group::get_thread_id() == 0)
       {
         // construct the object given the args
         tuple_placement_new<T>(static_cast<void*>(ptr), ma.args());
@@ -71,7 +72,7 @@ template<typename T>
 #if __CUDA_ARCH__
       __syncthreads();
 
-      if(threadIdx.x == 0)
+      if(this_thread_group::get_thread_id() == 0)
       {
         // destroy the object
         ptr->~T();

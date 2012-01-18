@@ -1,6 +1,7 @@
 #pragma once
 
 #include "marshaled_args.hpp"
+#include "../this_thread_group.hpp"
 
 struct launch_core_access
 {
@@ -32,7 +33,12 @@ struct launch_core_access
                                         const Arg3 &arg3, std::size_t shared_offset3,
                                         const Arg4 &arg4, std::size_t shared_offset4)
   {
-    extern __shared__ int smem [];
+    // initialize the runtime
+    this_thread_group::detail::set_block_id(blockIdx.x);
+    this_thread_group::detail::set_thread_id(threadIdx.x);
+
+    // get a pointer to the kernel's smem
+    void *smem = this_thread_group::detail::kernel_smem();
 
     f(detail::marshal_arg(reinterpret_cast<char*>(smem) + shared_offset1,arg1),
       detail::marshal_arg(reinterpret_cast<char*>(smem) + shared_offset2,arg2),

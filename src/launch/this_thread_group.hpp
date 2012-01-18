@@ -28,14 +28,14 @@ __device__ std::size_t &virtual_thread_id()
 __host__ __device__ std::size_t runtime_dynamic_shared_storage_requirements(std::size_t num_threads_per_block)
 {
   // reserve two std::size_ts per thread per block
-  return 2 * sizeof(std::size_t) * num_threads_per_block();
+  return 2 * sizeof(std::size_t) * num_threads_per_block;
 } // end runtime_dynamic_shared_storage_requirements
 
-__device__ void *dynamic_smem_begin()
+__device__ void *kernel_smem()
 {
   // the kernel's portion of shared memory begins right after the runtime's
   return reinterpret_cast<char*>(smem_ptr()) + runtime_dynamic_shared_storage_requirements(blockDim.x);
-} // end dynamic_smem_begin()
+} // end kernel_smem()
 
 __device__ void set_block_id(std::size_t id)
 {
@@ -53,20 +53,22 @@ __device__ void set_thread_id(std::size_t id)
 __host__ __device__ std::size_t get_block_id()
 {
 #if __CUDA_ARCH__
-  return virtual_block_id();
+  return detail::virtual_block_id();
 #else
   // XXX figure out what to do here
-  return 0
+  //     return something huge to signal a host thread
+  return static_cast<std::size_t>(-1);
 #endif
 } // end get_block_id()
 
 __host__ __device__ std::size_t get_thread_id()
 {
 #if __CUDA_ARCH__
-  return virtual_thread_id();
+  return detail::virtual_thread_id();
 #else
   // XXX figure out what to do here
-  return 0
+  //     return something huge to signal a host thread
+  return static_cast<std::size_t>(-1);
 #endif
 } // end get_id()
 

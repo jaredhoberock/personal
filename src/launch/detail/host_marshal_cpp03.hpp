@@ -4,7 +4,7 @@
 
 #include "device_marshal.hpp"
 #include "shared_storage_requirements_calculator.hpp"
-#include "this_thread_group.hpp"
+#include "../this_thread_group.hpp"
 #include <numeric>
 #include <thrust/reduce.h>
 #include <thrust/scan.h>
@@ -84,12 +84,15 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
   // exclusive scan the parameter storage requirements to find each parameter's offset
   thrust::exclusive_scan(storage_requirements.begin(),storage_requirements.end(),storage_requirements.begin());
 
+  std::cout << "allocating " << num_dynamic_smem_bytes << " smem bytes" << std::endl;
+  std::cout << "allocating " << num_runtime_bytes << " num_runtime_bytes" << std::endl;
+
   // launch the runtime
   device_marshal<<<num_blocks,num_threads_per_block,num_dynamic_smem_bytes>>>(f,
-                                                                              arg1,num_runtime_bytes + storage_requirements[0],
-                                                                              arg2,num_runtime_bytes + storage_requirements[1],
-                                                                              arg3,num_runtime_bytes + storage_requirements[2],
-                                                                              arg4,num_runtime_bytes + storage_requirements[3]);
+                                                                              arg1,storage_requirements[0],
+                                                                              arg2,storage_requirements[1],
+                                                                              arg3,storage_requirements[2],
+                                                                              arg4,storage_requirements[3]);
 } // end launch()
 
 
