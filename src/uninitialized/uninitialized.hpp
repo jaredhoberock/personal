@@ -14,24 +14,44 @@ template<>
   struct bytes<1>
 {
   char impl;
+
+  __device__ inline void *void_ptr()
+  {
+    return reinterpret_cast<void*>(this + offsetof(bytes<1>, impl));
+  }
 };
 
 template<>
   struct bytes<2>
 {
   char impl1, impl2;
+
+  __device__ inline void *void_ptr()
+  {
+    return reinterpret_cast<void*>(this + offsetof(bytes<2>, impl1));
+  }
 };
 
 template<>
   struct bytes<3>
 {
   char impl1, impl2, impl3;
+
+  __device__ inline void *void_ptr()
+  {
+    return reinterpret_cast<void*>(this + offsetof(bytes<3>, impl1));
+  }
 };
 
 template<>
   struct bytes<4>
 {
   int impl;
+
+  __device__ inline void *void_ptr()
+  {
+    return reinterpret_cast<void*>(this + offsetof(bytes<4>, impl));
+  }
 };
 
 template<unsigned int N>
@@ -47,6 +67,19 @@ template<typename T>
   class uninitialized
     : private detail::bytes<sizeof(T)>
 {
+  private:
+    typedef detail::bytes<sizeof(T)> super_t;
+
+    __device__ inline const T* ptr() const
+    {
+      return reinterpret_cast<const T*>(super_t::void_ptr());
+    }
+
+    __device__ inline T* ptr()
+    {
+      return reinterpret_cast<T*>(super_t::void_ptr());
+    }
+
   public:
     // copy assignment
     __device__ inline uninitialized<T> &operator=(const T &other)
@@ -215,17 +248,6 @@ template<typename T>
     {
       T& self = *this;
       self.~T(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10);
-    }
-
-  private:
-    __device__ inline const T* ptr() const
-    {
-      return reinterpret_cast<const T*>(this);
-    }
-
-    __device__ inline T* ptr()
-    {
-      return reinterpret_cast<T*>(this);
     }
 };
 
