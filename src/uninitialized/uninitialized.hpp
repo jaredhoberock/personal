@@ -21,39 +21,6 @@ template<>
   }
 };
 
-template<>
-  struct bytes<2>
-{
-  char impl1, impl2;
-
-  __device__ inline void *void_ptr()
-  {
-    return reinterpret_cast<void*>(this + offsetof(bytes<2>, impl1));
-  }
-};
-
-template<>
-  struct bytes<3>
-{
-  char impl1, impl2, impl3;
-
-  __device__ inline void *void_ptr()
-  {
-    return reinterpret_cast<void*>(this + offsetof(bytes<3>, impl1));
-  }
-};
-
-template<>
-  struct bytes<4>
-{
-  int impl;
-
-  __device__ inline void *void_ptr()
-  {
-    return reinterpret_cast<void*>(this + offsetof(bytes<4>, impl));
-  }
-};
-
 template<unsigned int N>
   struct bytes
     : bytes<N - 1>
