@@ -17,7 +17,12 @@ template<>
 
   __device__ inline void *void_ptr()
   {
-    return reinterpret_cast<void*>(this + offsetof(bytes<1>, impl));
+    return reinterpret_cast<void*>(reinterpret_cast<char*>(this) + offsetof(bytes<1>, impl));
+  }
+
+  __device__ inline const void *void_ptr() const
+  {
+    return reinterpret_cast<void*>(reinterpret_cast<const char*>(this) + offsetof(bytes<1>, impl));
   }
 };
 
