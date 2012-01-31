@@ -40,7 +40,7 @@ __global__ void kernel()
   }
   __syncthreads();
 
-  printf("Trivial types are allowed to be declared shared. triv's value is %d\n", triv.x);
+  printf("Trivial types are allowed to be declared shared. Thread %2d sees triv's value is %d\n", threadIdx.x, triv.x);
 
   // disallow types with non-trivial constructor
   // __shared__ non_trivial_constructor y; // Error!
