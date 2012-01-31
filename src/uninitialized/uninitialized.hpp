@@ -5,12 +5,12 @@
 namespace detail
 {
 
-template<unsigned int N, typename AlignAs, bool terminate = N <= sizeof(AlignAs)> struct static_storage_impl;
+template<unsigned int N, bool terminate = N <= sizeof(char)> struct static_storage_impl;
 
-template<unsigned int N, typename AlignAs>
-  struct static_storage_impl<N, AlignAs, true>
+template<unsigned int N>
+  struct static_storage_impl<N, true>
 {
-  AlignAs impl;
+  char impl;
 
   __device__ inline void *void_ptr()
   {
@@ -23,17 +23,17 @@ template<unsigned int N, typename AlignAs>
   }
 };
 
-template<unsigned int N, typename AlignAs>
-  struct static_storage_impl<N,AlignAs,false>
-    : static_storage_impl<N - sizeof(AlignAs), AlignAs>
+template<unsigned int N>
+  struct static_storage_impl<N,false>
+    : static_storage_impl<N - sizeof(char)>
 {
-  AlignAs impl;
+  char impl;
 };
 
-// static_storage is a type with size at least N bytes with alignment the same as AlignAs
-template<unsigned int N, typename AlignAs = int>
+// static_storage is a type with size at least N bytes
+template<unsigned int N>
   struct static_storage
-    : static_storage_impl<N,AlignAs>
+    : static_storage_impl<N>
 {};
 
 } // end detail
