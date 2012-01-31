@@ -5,42 +5,47 @@
 namespace detail
 {
 
-template<unsigned int i> struct bytes;
+template<unsigned int N, typename AlignAs, bool terminate = N <= sizeof(AlignAs)> struct static_storage_impl;
 
-template<> struct bytes<0>;
-
-
-template<>
-  struct bytes<1>
+template<unsigned int N, typename AlignAs>
+  struct static_storage_impl<N, AlignAs, true>
 {
-  char impl;
+  AlignAs impl;
 
   __device__ inline void *void_ptr()
   {
-    return reinterpret_cast<void*>(reinterpret_cast<char*>(this) + offsetof(bytes<1>, impl));
+    return reinterpret_cast<void*>(&impl);
   }
 
   __device__ inline const void *void_ptr() const
   {
-    return reinterpret_cast<void*>(reinterpret_cast<const char*>(this) + offsetof(bytes<1>, impl));
+    return reinterpret_cast<const void*>(&impl);
   }
 };
 
-template<unsigned int N>
-  struct bytes
-    : bytes<N - 1>
+template<unsigned int N, typename AlignAs>
+  struct static_storage_impl<N,AlignAs,false>
+    : static_storage_impl<N - sizeof(AlignAs), AlignAs>
 {
-  char impl;
+  AlignAs impl;
 };
+
+// static_storage is a type with size at least N bytes with alignment the same as AlignAs
+template<unsigned int N, typename AlignAs = int>
+  struct static_storage
+    : static_storage_impl<N,AlignAs>
+{};
 
 } // end detail
 
 template<typename T>
   class uninitialized
-    : private detail::bytes<sizeof(T)>
+    : private detail::static_storage<sizeof(T)>
 {
   private:
-    typedef detail::bytes<sizeof(T)> super_t;
+    detail::static_storage<sizeof(T)> impl;
+
+    typedef detail::static_storage<sizeof(T)> super_t;
 
     __device__ inline const T* ptr() const
     {
