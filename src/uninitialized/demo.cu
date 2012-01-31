@@ -30,9 +30,16 @@ struct trivial
 
 __global__ void kernel()
 {
-  // allow types with trivial constructors & destructors
+  // allow types with trivial constructors & destructors, but disallow initialization
   __shared__ trivial triv;
-  triv.x = 42;
+  
+  __syncthreads();
+  if(threadIdx.x == 0)
+  {
+    triv.x = 42;
+  }
+  __syncthreads();
+
   printf("Trivial types are allowed to be declared shared. triv's value is %d\n", triv.x);
 
   // disallow types with non-trivial constructor
@@ -72,7 +79,7 @@ __global__ void kernel()
 
 int main()
 {
-  kernel<<<1,1>>>();
+  kernel<<<1,32>>>();
   cudaThreadSynchronize();
   return 0;
 }
