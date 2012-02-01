@@ -2,59 +2,30 @@
 
 #include <memory>
 
-namespace detail
+template<std::size_t Len, std::size_t Align>
+  struct aligned_storage
 {
-
-template<unsigned int N, bool terminate = N <= sizeof(char)> struct static_storage_impl;
-
-template<unsigned int N>
-  struct static_storage_impl<N, true>
-{
-  char impl;
-
-  __device__ inline void *void_ptr()
+  union type
   {
-    return reinterpret_cast<void*>(&impl);
-  }
-
-  __device__ inline const void *void_ptr() const
-  {
-    return reinterpret_cast<const void*>(&impl);
-  }
+    unsigned char data[Len];
+    struct __align__(Align) { } align;
+  };
 };
-
-template<unsigned int N>
-  struct static_storage_impl<N,false>
-    : static_storage_impl<N - sizeof(char)>
-{
-  char impl;
-};
-
-// static_storage is a type with size at least N bytes
-template<unsigned int N>
-  struct static_storage
-    : static_storage_impl<N>
-{};
-
-} // end detail
 
 template<typename T>
   class uninitialized
-    : private detail::static_storage<sizeof(T)>
 {
   private:
-    detail::static_storage<sizeof(T)> impl;
-
-    typedef detail::static_storage<sizeof(T)> super_t;
+    typename aligned_storage<sizeof(T), sizeof(T)>::type storage;
 
     __device__ inline const T* ptr() const
     {
-      return reinterpret_cast<const T*>(super_t::void_ptr());
+      return reinterpret_cast<const T*>(storage.data);
     }
 
     __device__ inline T* ptr()
     {
-      return reinterpret_cast<T*>(super_t::void_ptr());
+      return reinterpret_cast<T*>(storage.data);
     }
 
   public:
