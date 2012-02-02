@@ -1,6 +1,6 @@
 #pragma once
 
-#include "unintialized.hpp"
+#include "uninitialized.hpp"
 
 template<typename T, std::size_t N>
   class uninitialized_array
@@ -91,12 +91,12 @@ template<typename T, std::size_t N>
       return data()[size() - size_type(1)];
     }
 
-    __forceinline__ __device__ const_reference back() const;
+    __forceinline__ __device__ const_reference back() const
     {
       return data()[size() - size_type(1)];
     }
 
   private:
-    unintialized<T[N]> impl;
+    uninitialized<T[N]> impl;
 };
 
