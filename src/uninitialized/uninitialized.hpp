@@ -2,6 +2,38 @@
 
 #include <memory>
 
+namespace detail_uninit
+{
+
+template<typename T> struct alignment_of_impl;
+
+template<typename T, std::size_t size_diff>
+  struct helper
+{
+  static const std::size_t value = size_diff;
+};
+
+template<typename T>
+  struct helper<T,0>
+{
+  static const std::size_t value = alignment_of_impl<T>::value;
+};
+
+template<typename T>
+  struct alignment_of_impl
+{
+  struct big { T x; char c; };
+
+  static const std::size_t value = helper<big, sizeof(big) - sizeof(T)>::value;
+};
+  
+} // end detail_uninit
+
+template<typename T>
+  struct alignment_of
+    : detail_uninit::alignment_of_impl<T>
+{};
+
 template<std::size_t Len, std::size_t Align>
   struct aligned_storage
 {
@@ -16,7 +48,7 @@ template<typename T>
   class uninitialized
 {
   private:
-    typename aligned_storage<sizeof(T), sizeof(T)>::type storage;
+    typename aligned_storage<sizeof(T), alignment_of<T>::value>::type storage;
 
     __device__ inline const T* ptr() const
     {
