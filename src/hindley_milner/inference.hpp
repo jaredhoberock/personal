@@ -98,7 +98,6 @@ class environment
 
     inline std::size_t unique_id()
     {
-      std::clog << "environment::unique_id(): returning " << m_next_id << std::endl;
       return m_next_id++;
     }
 
