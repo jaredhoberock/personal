@@ -2,54 +2,62 @@
 
 #include <memory>
 
-namespace detail
+namespace detail_uninit
 {
 
-template<unsigned int i> struct bytes;
+template<typename T> struct alignment_of_impl;
 
-template<> struct bytes<0>;
-
-
-template<>
-  struct bytes<1>
+template<typename T, std::size_t size_diff>
+  struct helper
 {
-  char impl;
-
-  __device__ inline void *void_ptr()
-  {
-    return reinterpret_cast<void*>(reinterpret_cast<char*>(this) + offsetof(bytes<1>, impl));
-  }
-
-  __device__ inline const void *void_ptr() const
-  {
-    return reinterpret_cast<void*>(reinterpret_cast<const char*>(this) + offsetof(bytes<1>, impl));
-  }
+  static const std::size_t value = size_diff;
 };
 
-template<unsigned int N>
-  struct bytes
-    : bytes<N - 1>
+template<typename T>
+  struct helper<T,0>
 {
-  char impl;
+  static const std::size_t value = alignment_of_impl<T>::value;
 };
 
-} // end detail
+template<typename T>
+  struct alignment_of_impl
+{
+  struct big { T x; char c; };
+
+  static const std::size_t value = helper<big, sizeof(big) - sizeof(T)>::value;
+};
+  
+} // end detail_uninit
+
+template<typename T>
+  struct alignment_of
+    : detail_uninit::alignment_of_impl<T>
+{};
+
+template<std::size_t Len, std::size_t Align>
+  struct aligned_storage
+{
+  union type
+  {
+    unsigned char data[Len];
+    struct __align__(Align) { } align;
+  };
+};
 
 template<typename T>
   class uninitialized
-    : private detail::bytes<sizeof(T)>
 {
   private:
-    typedef detail::bytes<sizeof(T)> super_t;
+    typename aligned_storage<sizeof(T), alignment_of<T>::value>::type storage;
 
     __device__ inline const T* ptr() const
     {
-      return reinterpret_cast<const T*>(super_t::void_ptr());
+      return reinterpret_cast<const T*>(storage.data);
     }
 
     __device__ inline T* ptr()
     {
-      return reinterpret_cast<T*>(super_t::void_ptr());
+      return reinterpret_cast<T*>(storage.data);
     }
 
   public:
@@ -150,76 +158,6 @@ template<typename T>
     {
       T& self = *this;
       self.~T();
-    }
-
-    template<typename Arg1>
-    inline __device__ void destroy(const Arg1 &a1)
-    {
-      T& self = *this;
-      self.~T(a1);
-    }
-
-    template<typename Arg1, typename Arg2>
-    inline __device__ void destroy(const Arg1 &a1, const Arg2 &a2)
-    {
-      T& self = *this;
-      self.~T(a1,a2);
-    }
-
-    template<typename Arg1, typename Arg2, typename Arg3>
-    inline __device__ void destroy(const Arg1 &a1, const Arg2 &a2, const Arg3 &a3)
-    {
-      T& self = *this;
-      self.~T(a1,a2,a3);
-    }
-
-    template<typename Arg1, typename Arg2, typename Arg3, typename Arg4>
-    inline __device__ void destroy(const Arg1 &a1, const Arg2 &a2, const Arg3 &a3, const Arg4 &a4)
-    {
-      T& self = *this;
-      self.~T(a1,a2,a3,a4);
-    }
-
-    template<typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
-    inline __device__ void destroy(const Arg1 &a1, const Arg2 &a2, const Arg3 &a3, const Arg4 &a4, const Arg5 &a5)
-    {
-      T& self = *this;
-      self.~T(a1,a2,a3,a4,a5);
-    }
-
-    template<typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6>
-    inline __device__ void destroy(const Arg1 &a1, const Arg2 &a2, const Arg3 &a3, const Arg4 &a4, const Arg5 &a5, const Arg6 &a6)
-    {
-      T& self = *this;
-      self.~T(a1,a2,a3,a4,a5,a6);
-    }
-
-    template<typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6, typename Arg7>
-    inline __device__ void destroy(const Arg1 &a1, const Arg2 &a2, const Arg3 &a3, const Arg4 &a4, const Arg5 &a5, const Arg6 &a6, const Arg7 &a7)
-    {
-      T& self = *this;
-      self.~T(a1,a2,a3,a4,a5,a6,a7);
-    }
-
-    template<typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6, typename Arg7, typename Arg8>
-    inline __device__ void destroy(const Arg1 &a1, const Arg2 &a2, const Arg3 &a3, const Arg4 &a4, const Arg5 &a5, const Arg6 &a6, const Arg7 &a7, const Arg8 &a8)
-    {
-      T& self = *this;
-      self.~T(a1,a2,a3,a4,a5,a6,a7,a8);
-    }
-
-    template<typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6, typename Arg7, typename Arg8, typename Arg9>
-    inline __device__ void destroy(const Arg1 &a1, const Arg2 &a2, const Arg3 &a3, const Arg4 &a4, const Arg5 &a5, const Arg6 &a6, const Arg7 &a7, const Arg8 &a8, const Arg9 &a9)
-    {
-      T& self = *this;
-      self.~T(a1,a2,a3,a4,a5,a6,a7,a8,a9);
-    }
-
-    template<typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6, typename Arg7, typename Arg8, typename Arg9, typename Arg10>
-    inline __device__ void destroy(const Arg1 &a1, const Arg2 &a2, const Arg3 &a3, const Arg4 &a4, const Arg5 &a5, const Arg6 &a6, const Arg7 &a7, const Arg8 &a8, const Arg9 &a9, const Arg10 &a10)
-    {
-      T& self = *this;
-      self.~T(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10);
     }
 };
 
