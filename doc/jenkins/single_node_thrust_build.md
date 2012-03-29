@@ -26,18 +26,16 @@ Configuration
   * e.g. `thrust_unit_tests`
 4. Add a helpful description, e.g.
 
-```
-Polls thrust/thrust
+        Polls thrust/thrust
 
-When a changed branch whose name matches integrate-* is found, that branch is merged to the local master branch
+        When a changed branch whose name matches integrate-* is found, that branch is merged to the local master branch
 
-master is built with scons and unit tests are executed
+        master is built with scons and unit tests are executed
 
-If the build is successful:
+        If the build is successful:
 
-1. The integration branch is deleted on thrust/thrust
-2. master is pushed back to thrust/thrust
-```
+        1. The integration branch is deleted on thrust/thrust
+        2. master is pushed back to thrust/thrust
 
 5. Fill in the box "GitHub project":
   * `http://github.com/thrust/thrust/`
