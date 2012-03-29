@@ -26,16 +26,18 @@ Configuration
   * e.g. `thrust_unit_tests`
 4. Add a helpful description, e.g.
 
-    Polls jaredhoberock/thrust-staging.
+```
+Polls jaredhoberock/thrust-staging.
 
-    When a changed branch whose name matches integrate-* is found, that branch is merged to the local master branch
+When a changed branch whose name matches integrate-* is found, that branch is merged to the local master branch
 
-    master is built with scons and unit tests are executed
+master is built with scons and unit tests are executed
 
-    If the build is successful:
+If the build is successful:
 
-    1. The integration branch is deleted on thrust/thrust
-    2. master is pushed back to thrust/thrust
+1. The integration branch is deleted on thrust/thrust
+2. master is pushed back to thrust/thrust
+```
 
 5. Fill in the box "GitHub project":
   * `http://github.com/thrust/thrust/`
@@ -59,6 +61,7 @@ Configuration
   2. Select **Add build step** and choose **Execute Python script**
     1. Fill in **Execute Python script** box with the following script
 
+```
     # this script deletes the remote integration branch which triggered this build if it exists
     import sys
     import os
@@ -71,6 +74,7 @@ Configuration
       print 'Deleting remote branch', branch
       command = ['git', 'push', remote, ':'+branch]
       subprocess.check_call(command)
+```
 
 9. Under **Post-build Actions**
   1. Check the box **Git Publisher**
