@@ -27,7 +27,7 @@ Configuration
 4. Add a helpful description, e.g.
 
 ```
-Polls jaredhoberock/thrust-staging.
+Polls thrust/thrust
 
 When a changed branch whose name matches integrate-* is found, that branch is merged to the local master branch
 
@@ -54,7 +54,7 @@ If the build is successful:
   1. Select **Add build step** and choose **Invoke SCons script**
     1. Fill in **Invoke SCons script** boxes
       1. **Options**: `-j2`
-      2. **Variables*: `host_backend=all device_backend=all arch=sm_20`
+      2. **Variables**: `host_backend=all device_backend=all arch=sm_20`
       3. **Targets**: `run_tests`
       4. **SConscript root directory**: `.`
       5. **SConscript file**: `SConstruct`
