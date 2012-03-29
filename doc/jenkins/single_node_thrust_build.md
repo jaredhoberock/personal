@@ -52,7 +52,7 @@ Configuration
   1. Select **Add build step** and choose **Invoke SCons script**
     1. Fill in **Invoke SCons script** boxes
       1. **Options**: `-j2`
-      2. **Variables*: `host_backend=all device_backend=all arch=sm_20`
+      2. **Variables**: `host_backend=all device_backend=all arch=sm_20`
       3. **Targets**: `run_tests`
       4. **SConscript root directory**: `.`
       5. **SConscript file**: `SConstruct`
