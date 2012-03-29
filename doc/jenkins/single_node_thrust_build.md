@@ -42,22 +42,22 @@ Configuration
 6. Under **Source Code Management**
   1. Select **Git**
   2. Fill in the **Repository URL**
-    * `git@github.com:thrust/thrust.git`
+    1. `git@github.com:thrust/thrust.git`
   3. Fill in the **Branch Specifier**
-    * `origin/integrate-*`
+    1. `origin/integrate-*`
 7. Under **Build Triggers**
   1. Select **Poll SCM**
   2. Fill in the box **Schedule**: `* * * * *`
 8. Under **Build**
   1. Select **Add build step** and choose **Invoke SCons script**
-    1. Fill in **Invoke SCons script** boxes
+    * Fill in **Invoke SCons script** boxes
       1. **Options**: `-j2`
       2. **Variables**: `host_backend=all device_backend=all arch=sm_20`
       3. **Targets**: `run_tests`
       4. **SConscript root directory**: `.`
       5. **SConscript file**: `SConstruct`
   2. Select **Add build step** and choose **Execute Python script**
-    1. Fill in **Execute Python script** box with the following script
+    * Fill in **Execute Python script** box with the following script
 
         ```
         # this script deletes the remote integration branch which triggered this build if it exists
@@ -76,9 +76,9 @@ Configuration
 
 9. Under **Post-build Actions**
   1. Check the box **Git Publisher**
-    * Check the box **Push Only If Build Succeeds**
-    * Check the box **Merge Results**
+    1. Check the box **Push Only If Build Succeeds**
+    2. Check the box **Merge Results**
   2. Under **Branches**
-    * Fill in the box **Branch to push**: `master`
-    * Fill in the box **Target remote name**: `origin`
+    1. Fill in the box **Branch to push**: `master`
+    2. Fill in the box **Target remote name**: `origin`
 
