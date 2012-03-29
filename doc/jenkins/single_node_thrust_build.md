@@ -59,6 +59,7 @@ Configuration
   2. Select **Add build step** and choose **Execute Python script**
     1. Fill in **Execute Python script** box with the following script
 
+        ```
         # this script deletes the remote integration branch which triggered this build if it exists
         import sys
         import os
@@ -71,6 +72,7 @@ Configuration
           print 'Deleting remote branch', branch
           command = ['git', 'push', remote, ':'+branch]
           subprocess.check_call(command)
+        ```
 
 9. Under **Post-build Actions**
   1. Check the box **Git Publisher**
