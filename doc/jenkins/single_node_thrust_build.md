@@ -26,7 +26,7 @@ Configuration
   * e.g. `thrust_unit_tests`
 4. Add a helpful description, e.g.
 
-    Polls jaredhoberock/thrust-staging.
+    Polls thrust/thrust
 
     When a changed branch whose name matches integrate-* is found, that branch is merged to the local master branch
 
