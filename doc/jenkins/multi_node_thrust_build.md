@@ -40,7 +40,7 @@ Configuration
       3. Fill in the **Branch Specifier**: `origin/integrate-*`
     5. Under **Build Triggers**
       1. Select **Poll SCM**
-      2. Fill in the box **Schedule**: ~* * * * *~
+      2. Fill in the box **Schedule**: `* * * * *`
     6. Under **Build**
       1. Select **Trigger/call builds on other projects**
         1. Fill in the box **Projects to build**: `test_and_integrate_branch`
