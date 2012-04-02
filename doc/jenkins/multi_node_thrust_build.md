@@ -54,9 +54,12 @@ Configuration
     1. Create a new build job
       * name it `integrate_and_test_branch`
     2. Add a helpful description, e.g.
-  
+
+        ~~~  
+
         Tests a specified Git branch. If the tests pass, the branch is integrated to master.
-  
+        ~~~
+        
     3. Check **This build is parameterized**
       1. Select **Text Parameter**
         1. Fill in the **Name** box: `GIT_BRANCH`
@@ -82,8 +85,10 @@ Configuration
       * select multi-configuration job
     2. Add a helpful description, e.g.
   
+          ~~~
           Builds and executes the Thrust unit tests over the entire combinatorial test space.
-  
+          ~~~  
+
     3. Check **This build is parameterized**
       1. Select **Text Parameter**
         1. Fill in the box **Name**: `GIT_BRANCH`
@@ -124,8 +129,12 @@ Configuration
     1. Create a new build job
       1. Name it `prune_branch_and_merge_changes`
     2. Add a helpful description, e.g.
-  
+
+          ~~~  
+
           Deletes the specified branch from the remote repository and pushes merged changes to master.
+          ~~~
+          
   
     3. Check **This build is parameterized**
       1. Fill in the field **Name**: `GIT_BRANCH`
