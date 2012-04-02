@@ -27,12 +27,14 @@ Configuration
       * name it `poll_github_for_changes`
     2. Add a helpful description, e.g.
   
+          ~~~
           Polls jaredhoberock/thrust-staging.git
   
           When a changed branch is found whose name matches integrate-*, several build jobs are forked
   
           If the build jobs are successful, they are joined by prune_branch_and_merge_changes
-  
+          ~~~
+
     3. Fill in the box "GitHub project": `http://github.com/jaredhoberock/thrust-staging`
     4. Under **Source Code Management**
       1. Select **Git**
@@ -104,7 +106,8 @@ Configuration
         1. Select **Add build step**
           1. Select **Execute Python script**
           2. Fill in the field **Script**:
-  
+
+          ~~~
           # the scons plugin doesn't work with multiconfig jobs
           # so launch scons manually
           # use python to make the launch process portable
@@ -115,6 +118,7 @@ Configuration
           targets = ['run_examples']
           command = ['scons', '-j2', 'host_backend='+host_backend, 'device_backend='+device_backend, 'arch=sm_20'] + targets
           subprocess.check_call(command)
+          ~~~
   
   4. Introduce a job to delete the remote integration branch and merge its changes to `master`
     1. Create a new build job
@@ -132,32 +136,34 @@ Configuration
     5. Under **Build**
       1. Select **Add build step**
       2. Select **Execute Python script**
-        1. Fill in the field **Script**:
-  
-          # this script deletes the remote branch specified by the parameter GIT_BRANCH
-          # much of the string manipulation here results from the fact that GIT_BRANCH
-          # may be either "repo/branch" or just "branch"
-          import os
-          import re
-          import subprocess
-          git_branch = os.environ['GIT_BRANCH']
-          # ignore branches which aren't temporary integration branches
-          if re.match('(.*/)?integrate-.*', git_branch):
-            # prepend 'origin/' if it doesn't exist
-            if 'origin/' not in git_branch:
-              git_branch = 'origin/' + git_branch
-            # poll the remote's list of branches
-            remote_branches = subprocess.check_output(['git', 'branch', '-r'])
-            if git_branch in set(remote_branches.split()):
-              (remote, branch) = git_branch.split('/')
-              print 'Deleting remote branch', branch
-              command = ['git', 'push', remote, ':'+branch]
-              subprocess.check_call(command)
-            else:
-              print 'Ignoring non-existing remote branch', git_branch
+ 1. Fill in the field **Script**:
+ 
+        ~~~
+        # this script deletes the remote branch specified by the parameter GIT_BRANCH
+        # much of the string manipulation here results from the fact that GIT_BRANCH
+        # may be either "repo/branch" or just "branch"
+        import os
+        import re
+        import subprocess
+        git_branch = os.environ['GIT_BRANCH']
+        # ignore branches which aren't temporary integration branches
+        if re.match('(.*/)?integrate-.*', git_branch):
+          # prepend 'origin/' if it doesn't exist
+          if 'origin/' not in git_branch:
+            git_branch = 'origin/' + git_branch
+          # poll the remote's list of branches
+          remote_branches = subprocess.check_output(['git', 'branch', '-r'])
+          if git_branch in set(remote_branches.split()):
+            (remote, branch) = git_branch.split('/')
+            print 'Deleting remote branch', branch
+            command = ['git', 'push', remote, ':'+branch]
+            subprocess.check_call(command)
           else:
-            print 'Ignoring non-integration branch', git_branch
-  
+            print 'Ignoring non-existing remote branch', git_branch
+        else:
+          print 'Ignoring non-integration branch', git_branch
+        ~~~
+
     6. Under **Post-build Actions**
       1. Check **Git Publisher**
         1. Check **Push Only If Build Succeeds**
