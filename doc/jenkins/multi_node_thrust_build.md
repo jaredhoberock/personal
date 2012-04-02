@@ -46,7 +46,7 @@ Configuration
     6. Under **Build**
       1. Select **Trigger/call builds on other projects**
         1. Fill in the box **Projects to build**: `test_and_integrate_branch`
-        2. Check **Block until the triggered projects finish their builds*
+        2. Check **Block until the triggered projects finish their builds**
         3. Select **Add Parameters**
           1. Choose **Predefined parameters**
             1. Fill in the **Parameters** box: `GIT_BRANCH=$GIT_BRANCH`
