@@ -89,7 +89,8 @@ Configuration
         3. Fill in the box **Description**: `Git branch to test`
       2. Under **Source Code Management**
         1. Select **Git**
-        2. Fill in the field **Repository URL**: `git@github.com/jaredhoberock/thrust-staging.git`
+        2. Fill in the field **Repository URL**: `git://github.com/jaredhoberock/thrust-staging.git`
+          * note we use read only access to avoid having to give each node SSH keys
         3. Fill in the field **Branch Specifier**: `$GIT_BRANCH`
       3. Under **Configuration Matrix**
         1. Select **Add Axis**
