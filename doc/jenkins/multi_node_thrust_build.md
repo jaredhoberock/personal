@@ -38,7 +38,7 @@ Configuration
     3. Fill in the box "GitHub project": `http://github.com/jaredhoberock/thrust-staging`
     4. Under **Source Code Management**
       1. Select **Git**
-      2. Fill in the **Repository URL**: `git@github.com/jaredhoberock/thrust-staging.git`
+      2. Fill in the **Repository URL**: `git://github.com/jaredhoberock/thrust-staging.git`
       3. Fill in the **Branch Specifier**: `origin/integrate-*`
     5. Under **Build Triggers**
       1. Select **Poll SCM**
@@ -66,7 +66,7 @@ Configuration
         2. Fill in the **Description** box: `The git branch to test and integrate`
     4. Under **Source Code Management**
       1. Select **Git**
-      2. Fill in the **Repository URL**: `git@github.com/jaredhoberock/thrust-staging.git`
+      2. Fill in the **Repository URL**: `git://github.com/jaredhoberock/thrust-staging.git`
       3. Fill in the **Branch Specifier**: `$GIT_BRANCH`
     5. Under **Post-build Actions**
       1. Check **Join Trigger**
@@ -139,9 +139,14 @@ Configuration
   
     3. Check **This build is parameterized**
       1. Fill in the field **Name**: `GIT_BRANCH`
+    4. Check **Restrict where this project can be run**
+      1. Fill in the field **Label Expression**: `master`
+        * We assume that only the master node has permission to push changes to the Git repository
     4. Under **Source Code Management**
       1. Select **Git**
         1. Fill in the field **Repository URL**: `git@github.com:jaredhoberock/thrust-staging.git`
+          * note that this URL enables read+write access
+          * this job must be built on a node (i.e., `master`) with proper SSH configuration
         2. Fill in the field **Branch Specifier**: `$GIT_BRANCH`
     5. Under **Build**
       1. Select **Add build step**
