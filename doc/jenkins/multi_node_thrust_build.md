@@ -122,7 +122,7 @@ Configuration
           host_backend=os.environ['HOST_BACKEND']
           device_backend=os.environ['DEVICE_BACKEND']
           targets = ['run_examples']
-          command = ['scons', '-j2', 'host_backend='+host_backend, 'device_backend='+device_backend, 'arch=sm_20'] + targets
+          command = ['scons', '-j2', 'host_backend='+host_backend, 'device_backend='+device_backend] + targets
           subprocess.check_call(command)
           ~~~
   
