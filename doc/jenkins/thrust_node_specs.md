@@ -1,6 +1,6 @@
 [Mobo: ASUS P9X79 PRO LGA 2011 Intel X79](http://www.newegg.com/Product/Product.aspx?Item=N82E16813131800)
 
-[CPU: Intel Core i7-3930K Sandy Bridge](http://www.newegg.com/Product/Product.aspx?Item=N82E16819116492)
+[CPU: 6 Core Intel Core i7-3930K Sandy Bridge](http://www.newegg.com/Product/Product.aspx?Item=N82E16819116492)
 
 GPU0: `sm_10` or `sm_13`
 GPU1: `sm_20`, probably GF 480 GTX
