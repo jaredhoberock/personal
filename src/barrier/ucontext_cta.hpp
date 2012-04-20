@@ -66,7 +66,14 @@ class ucontext_cta
     template<typename Function>
       static void exec_thread(std::pair<ucontext_cta*,Function> *parms)
     {
-      parms->second();
+      try
+      {
+        parms->second();
+      }
+      catch(...)
+      {
+        // XXX ignore any exception
+      }
 
       parms->first->at_exit();
     }
