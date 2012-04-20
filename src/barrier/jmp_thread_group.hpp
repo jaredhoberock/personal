@@ -1,9 +1,9 @@
-#include "cta.hpp"
+#include "thread_group.hpp"
 #include <csetjmp>
 #include <vector>
 
-class jmpcta
-  : public cta
+class jmp_thread_group
+  : public thread_group
 {
   public:
     template<typename Function>

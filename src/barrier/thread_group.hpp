@@ -1,25 +1,25 @@
 #pragma once
 
-class cta;
+class thread_group;
 
 namespace this_thread_group
 {
 
 // XXX should be thread_local
 // XXX should be a stack for nested launch
-cta *__singleton;
+thread_group *__singleton;
 
 }
 
-class cta
+class thread_group
 {
   public:
-    cta()
+    thread_group()
     {
       this_thread_group::__singleton = this;
     }
 
-    virtual ~cta(){}
+    virtual ~thread_group(){}
 
     int current_thread_id()
     {

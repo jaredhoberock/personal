@@ -1,6 +1,5 @@
 #include <iostream>
-#include "jmpcta.hpp"
-#include "ucontext_cta.hpp"
+#include "ucontext_thread_group.hpp"
 #include <numeric>
 #include <vector>
 #include <functional>
@@ -9,7 +8,7 @@
 template<typename Function>
   void launch(int num_threads, Function f)
 {
-  ucontext_cta(num_threads, f);
+  ucontext_thread_group(num_threads, f);
 }
 
 namespace this_thread
