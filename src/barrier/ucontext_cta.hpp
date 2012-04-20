@@ -39,6 +39,8 @@ class ucontext_cta
         setcontext(&thread_state[0]);
       }
 
+      // when we've reached this point, all the threads in the group have terminated
+
       // null the current cta
       this_thread_group::__singleton = 0;
     }
