@@ -5,9 +5,12 @@
 class ucontext_cta
   : public cta
 {
+  private:
+    static const std::size_t stack_size = 1<<16;
+
   public:
     template<typename Function>
-      ucontext_cta(int num_threads, Function f, std::size_t stack_size = 1<<16)
+      ucontext_cta(int num_threads, Function f)
         : cta()
     {
       if(num_threads)
@@ -82,7 +85,7 @@ class ucontext_cta
     struct state
       : ucontext_t
     {
-      char stack[1<<16];
+      char stack[stack_size];
     };
 
     std::vector<state> thread_state;
