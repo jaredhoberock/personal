@@ -1,5 +1,6 @@
 #include "cta.hpp"
 #include <ucontext.h>
+#include <utility>
 
 class ucontext_cta
   : public cta
@@ -11,7 +12,9 @@ class ucontext_cta
     {
       thread_state.clear();
 
-      void (*fp)(ucontext_cta *, Function) = execute_thread<Function>;
+      // arguments to makecontext
+      void (*exec)(std::pair<ucontext_cta*,Function> *) = exec_thread<Function>;
+      std::pair<ucontext_cta*,Function> exec_parms = std::make_pair(this, f);
 
       // save the return state
       state join_state;
@@ -27,7 +30,7 @@ class ucontext_cta
           thread_state[i].uc_link = &join_state;
           thread_state[i].uc_stack.ss_sp = thread_state[i].stack;
           thread_state[i].uc_stack.ss_size = sizeof(thread_state[i].stack);
-          makecontext(&thread_state[i], (void(*)())fp, 2, this, f);
+          makecontext(&thread_state[i], (void(*)())exec, 1, &exec_parms);
         }
 
         // start thread 0
@@ -58,11 +61,11 @@ class ucontext_cta
     }
 
     template<typename Function>
-      static void execute_thread(ucontext_cta *cta, Function f)
+      static void exec_thread(std::pair<ucontext_cta*,Function> *parms)
     {
-      f();
+      parms->second();
 
-      cta->at_exit();
+      parms->first->at_exit();
     }
 
     struct state
