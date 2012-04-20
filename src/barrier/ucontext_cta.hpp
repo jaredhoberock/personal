@@ -7,22 +7,22 @@ class ucontext_cta
 {
   public:
     template<typename Function>
-      ucontext_cta(int num_threads, Function f)
+      ucontext_cta(int num_threads, Function f, std::size_t stack_size = 1<<16)
         : cta()
     {
       if(num_threads)
       {
-        // arguments to makecontext
-        // XXX each thread needs its own copy of f -- we should not refer to the same functor
-        void (*exec)(std::pair<ucontext_cta*,Function> *) = exec_thread<Function>;
-        std::pair<ucontext_cta*,Function> exec_parms = std::make_pair(this, f);
+        // make a copy of the parameters for each thread
+        // for arguments to makecontext
+        typedef std::pair<ucontext_cta*,Function> exec_parms_t;
+        void (*exec)(exec_parms_t *) = exec_thread<Function>;
+        std::vector<exec_parms_t> exec_parms(num_threads, std::make_pair(this,f));
 
         // save the return state
         state join_state;
         getcontext(&join_state);
         if(thread_state.empty())
         {
-          thread_state.clear();
           thread_state.resize(num_threads);
 
           for(int i = 0; i < thread_state.size(); ++i)
@@ -31,7 +31,7 @@ class ucontext_cta
             thread_state[i].uc_link = &join_state;
             thread_state[i].uc_stack.ss_sp = thread_state[i].stack;
             thread_state[i].uc_stack.ss_size = sizeof(thread_state[i].stack);
-            makecontext(&thread_state[i], (void(*)())exec, 1, &exec_parms);
+            makecontext(&thread_state[i], (void(*)())exec, 1, &exec_parms[i]);
           }
 
           // start thread 0
