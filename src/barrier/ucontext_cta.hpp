@@ -13,6 +13,7 @@ class ucontext_cta
       thread_state.clear();
 
       // arguments to makecontext
+      // XXX each thread needs its own copy of f -- we should not refer to the same functor
       void (*exec)(std::pair<ucontext_cta*,Function> *) = exec_thread<Function>;
       std::pair<ucontext_cta*,Function> exec_parms = std::make_pair(this, f);
 
