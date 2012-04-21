@@ -3,6 +3,7 @@
 #include "thread_group.hpp"
 #include <cstddef>
 #include <tbb/task_group.h>
+#include "detail/closure.hpp"
 
 namespace test
 {
@@ -33,14 +34,14 @@ template<typename Function>
 }
 
 // XXX one could also imagine a hierarchical implementation
-template<typename Function>
-  void linear_async(std::size_t num_groups, std::size_t num_threads, Function f)
+template<typename Function, typename... Args>
+  void linear_async(std::size_t num_groups, std::size_t num_threads, Function&& f, Args&&... args)
 {
   tbb::task_group g;
 
   for(std::size_t i = 0; i < num_groups; ++i)
   {
-    g.run(detail::make_thread_group(i, num_threads,f));
+    g.run(detail::make_thread_group(i, num_threads,detail::forward_as_closure(std::forward<Function>(f),std::forward<Args>(args)...)));
   } // end for i
 
   g.wait();
@@ -49,10 +50,10 @@ template<typename Function>
 } // end detail
 
 
-template<typename Function>
-  void async(std::size_t num_groups, std::size_t num_threads, Function f)
+template<typename Function, typename... Args>
+  void async(std::size_t num_groups, std::size_t num_threads, Function&& f, Args&&... args)
 {
-  return detail::linear_async(num_groups, num_threads, f);
+  return detail::linear_async(num_groups, num_threads, std::forward<Function>(f), std::forward<Args>(args)...);
 } // end async()
 
 

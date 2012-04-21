@@ -30,7 +30,7 @@ class thread_group
 
     virtual void barrier() = 0;
 
-    virtual int num_threads() = 0;
+    virtual int size() = 0;
 
     int get_id() const
     {
@@ -40,7 +40,7 @@ class thread_group
   protected:
     int next_current_thread_id()
     {
-      return (current_thread_id()+1) % num_threads();
+      return (current_thread_id()+1) % size();
     }
 
     void set_current_thread_id(int id)

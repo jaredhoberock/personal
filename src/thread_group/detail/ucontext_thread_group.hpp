@@ -1,4 +1,5 @@
 #include "../thread_group.hpp"
+#include "closure.hpp"
 #include <ucontext.h>
 #include <utility>
 #include <vector>
@@ -16,9 +17,35 @@ class ucontext_thread_group
     static const std::size_t stack_size = 1<<16;
 
   public:
-    template<typename Function>
-      ucontext_thread_group(int id, int num_threads, Function f)
+    template<typename Function, typename... Args>
+      ucontext_thread_group(int id, int num_threads, Function &&f, Args&&... args)
         : thread_group(id)
+    {
+      // XXX make_closure creates copies of f & args, but we should attempt
+      // to forward references until we make copies of the state inside exec
+      exec(num_threads, make_closure(f,args...));
+    }
+
+    virtual int size()
+    {
+      return thread_state.size();
+    }
+
+    void barrier()
+    {
+      // switch to next thread
+      int old_thread_id = set_next_current_thread_id();
+      swapcontext(&thread_state[old_thread_id], &thread_state[current_thread_id()]);
+    }
+
+  private:
+    void at_exit()
+    {
+      barrier();
+    }
+
+    template<typename Function>
+      void exec(std::size_t num_threads, Function f)
     {
       if(num_threads)
       {
@@ -54,24 +81,6 @@ class ucontext_thread_group
 
       // null the current thread_group
       this_thread_group::__singleton = 0;
-    }
-
-    virtual int num_threads()
-    {
-      return thread_state.size();
-    }
-
-    void barrier()
-    {
-      // switch to next thread
-      int old_thread_id = set_next_current_thread_id();
-      swapcontext(&thread_state[old_thread_id], &thread_state[current_thread_id()]);
-    }
-
-  private:
-    void at_exit()
-    {
-      barrier();
     }
 
     template<typename Function>
