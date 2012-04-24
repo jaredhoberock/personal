@@ -21,9 +21,7 @@ class ucontext_thread_group
       ucontext_thread_group(int id, int num_threads, Function &&f, Args&&... args)
         : thread_group(id)
     {
-      // XXX make_closure creates copies of f & args, but we should attempt
-      // to forward references until we make copies of the state inside exec
-      exec(num_threads, make_closure(f,args...));
+      exec(num_threads, std::forward<Function>(f), std::forward<Args>(args)...);
     }
 
     virtual int size()
@@ -44,16 +42,20 @@ class ucontext_thread_group
       barrier();
     }
 
-    template<typename Function>
-      void exec(std::size_t num_threads, Function f)
+    template<typename Function, typename... Args>
+      void exec(std::size_t num_threads, Function &&f, Args&&... args)
     {
       if(num_threads)
       {
+        // begin by making a closure
+        auto closure = detail::make_closure(std::forward<Function>(f),std::forward<Args>(args)...);
+        typedef decltype(closure) closure_type;
+
         // make a copy of the parameters for each thread
         // for arguments to makecontext
-        typedef std::pair<ucontext_thread_group*,Function> exec_parms_t;
-        void (*exec)(exec_parms_t *) = exec_thread<Function>;
-        std::vector<exec_parms_t> exec_parms(num_threads, std::make_pair(this,f));
+        typedef std::pair<ucontext_thread_group*,closure_type> exec_parms_t;
+        void (*exec)(exec_parms_t *) = exec_thread<closure_type>;
+        std::vector<exec_parms_t> exec_parms(num_threads, std::make_pair(this,closure));
 
         // save the return state
         state join_state;

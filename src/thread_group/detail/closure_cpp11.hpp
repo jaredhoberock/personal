@@ -3,61 +3,26 @@
 #include <utility>
 #include <type_traits>
 #include <tuple>
+#include "decay_copy.hpp"
+#include "apply_from_tuple_cpp11.hpp"
 
 namespace test
 {
 namespace detail
 {
 
-namespace closure_detail
-{
 
-template<std::size_t...> struct index_pack {};
-
-template<std::size_t N, std::size_t...S>
-  struct increasing_index_pack
-    : increasing_index_pack<N-1, N-1, S...>
-{};
-
-template<std::size_t...S>
-struct increasing_index_pack<0, S...> {
-  typedef index_pack<S...> type;
-};
-
-template<std::size_t N>
-  typename increasing_index_pack<N>::type
-    make_index_pack()
-{
-  return typename increasing_index_pack<N>::type();
-}
-
-template<typename Function, typename... Args, std::size_t... Indices>
-  void apply_from_tuple(Function f, const std::tuple<Args...> &args, index_pack<Indices...>)
-{
-  f(std::get<Indices>(args)...);
-}
-
-template<typename Function, typename... Args>
-  void apply_from_tuple(Function f, const std::tuple<Args...> &args)
-{
-  apply_from_tuple(f, args, make_index_pack<sizeof...(Args)>());
-}
-
-} // end closure_detail
-
-
-// XXX closure is a copy of the function & args
-//     we'd probably also want a reference closure
 template<typename Function, typename... Args>
   struct closure
 {
-  closure(Function f, Args... args)
-    : f(f), args(args...)
+  closure(const Function &f, const Args&... args)
+    : f(f),
+      args(args...)
   {}
 
   void operator()()
   {
-    closure_detail::apply_from_tuple(f, args);
+    apply_from_tuple(f, args);
   }
 
   Function f;
@@ -65,15 +30,18 @@ template<typename Function, typename... Args>
 };
 
 template<typename Function, typename... Args>
-  closure<Function,Args...> make_closure(Function &&f, Args&&... args)
+  closure<
+    typename std::decay<Function>::type,
+    typename std::decay<Args>::type...
+  >
+    make_closure(Function &&f, Args&&... args)
 {
-  return closure<Function,Args...>(std::forward<Function>(f),std::forward<Args>(args)...);
-}
+  typedef closure<
+    typename std::decay<Function>::type,
+    typename std::decay<Args>::type...
+  > result_type;
 
-template<typename Function, typename... Args>
-  closure<Function&&,Args&&...> forward_as_closure(Function &&f, Args&&... args)
-{
-  return closure<Function&&,Args&&...>(std::forward<Function>(f),std::forward<Args>(args)...);
+  return result_type(std::forward<Function>(f),std::forward<Args>(args)...);
 }
 
 

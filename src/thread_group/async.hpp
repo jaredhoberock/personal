@@ -46,7 +46,9 @@ template<typename Function, typename... Args>
 
   for(std::size_t i = 0; i < num_groups; ++i)
   {
-    g.run(detail::make_thread_group(i, num_threads,detail::forward_as_closure(std::forward<Function>(f),std::forward<Args>(args)...)));
+    // XXX it would be nice to be able to forward here, but it make execute_thread_group a mess
+    //     g++-4.6 doesn't correctly capture && variables, else we could use a lambda
+    g.run(detail::make_thread_group(i, num_threads,detail::make_closure(std::forward<Function>(f),std::forward<Args>(args)...)));
   } // end for i
 
   g.wait();
