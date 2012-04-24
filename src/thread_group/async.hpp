@@ -3,7 +3,12 @@
 #include "thread_group.hpp"
 #include <cstddef>
 #include <tbb/task_group.h>
-#include "detail/closure.hpp"
+
+#if defined(__GNUC__) && defined(__GXX_EXPERIMENTAL_CXX0X__)
+#include "detail/closure_cpp11.hpp"
+#else
+#error "This file requires compiler support for c++11"
+#endif
 
 namespace test
 {

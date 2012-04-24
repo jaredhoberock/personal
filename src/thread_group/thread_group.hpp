@@ -92,5 +92,9 @@ int get_id()
 
 } // end namespace test
 
-#include "detail/ucontext_thread_group.hpp"
+#if defined(__GNUC__) && defined(__GXX_EXPERIMENTAL_CXX0X__)
+#include "detail/ucontext_thread_group_cpp11.hpp"
+#else
+#error "This file requires compiler support for c++11"
+#endif
 

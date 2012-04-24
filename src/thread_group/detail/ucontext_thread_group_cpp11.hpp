@@ -1,5 +1,5 @@
 #include "../thread_group.hpp"
-#include "closure.hpp"
+#include "closure_cpp11.hpp"
 #include <ucontext.h>
 #include <utility>
 #include <vector>
