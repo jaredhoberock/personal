@@ -20,6 +20,11 @@ template<typename Function, typename... Args>
       args(args...)
   {}
 
+  closure(Function &&f, Args&&... args)
+    : f(std::forward<Function>(f)),
+      args(std::forward<Args>(args)...)
+  {}
+
   void operator()()
   {
     apply_from_tuple(f, args);
