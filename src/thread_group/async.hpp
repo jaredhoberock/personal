@@ -109,5 +109,18 @@ template<typename Function, typename... Args>
 } // end async()
 
 
+template<typename Function, typename... Args>
+  typename detail::enable_if_signature<
+    Function(Args...)
+  >::type
+    async(std::size_t num_threads, Function&& f, Args&&... args)
+{
+  // launch one group per thread for now
+  // XXX provide an intelligent decomposition which fills the machine while maximizing serial work
+  detail::linear_async(num_threads, 1, std::forward<Function>(f), std::forward<Args>(args)...);
+  return typename std::result_of<Function(Args...)>::type();
+}
+
+
 } // end test
 
