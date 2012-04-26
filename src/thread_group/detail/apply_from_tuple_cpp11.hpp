@@ -29,7 +29,7 @@ template<std::size_t N>
 }
 
 template<typename Function, typename... Args, std::size_t... Indices>
-  void apply_from_tuple(Function &&f, const std::tuple<Args...> &args, index_pack<Indices...>)
+  void apply_from_tuple_impl(Function &&f, const std::tuple<Args...> &args, index_pack<Indices...>)
 {
   f(std::get<Indices>(args)...);
 }
@@ -37,9 +37,9 @@ template<typename Function, typename... Args, std::size_t... Indices>
 template<typename Function, typename... Args>
   void apply_from_tuple(Function &&f, const std::tuple<Args...> &args)
 {
-  apply_from_tuple(std::forward<Function>(f),
-                   args,
-                   make_index_pack<sizeof...(Args)>());
+  apply_from_tuple_impl(std::forward<Function>(f),
+                        args,
+                        make_index_pack<sizeof...(Args)>());
 }
 
 } // end detail
