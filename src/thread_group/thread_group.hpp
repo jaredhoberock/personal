@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+
 namespace test
 {
 
@@ -76,6 +78,11 @@ int get_id()
 void barrier()
 {
   __singleton->barrier();
+}
+
+std::size_t size()
+{
+  __singleton->size();
 }
 
 } // end this_thread_group
