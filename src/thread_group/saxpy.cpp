@@ -1,3 +1,4 @@
+#include <iostream>
 #include "thread_group.hpp"
 #include "async.hpp"
 
@@ -14,6 +15,14 @@ void saxpy(float a, float *x, float *y, std::size_t n)
 void my_saxpy(float a, float *x, float *y, std::size_t n)
 {
   test::async(n, saxpy, a, x, y, n);
+}
+
+void simple_saxpy(float a, float *x, float *y, std::size_t n)
+{
+  for(int i = 0; i < n; ++i)
+  {
+    x[i] = a * x[i] + y[i];
+  }
 }
 
 int main()

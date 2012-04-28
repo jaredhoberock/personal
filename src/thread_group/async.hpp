@@ -3,9 +3,11 @@
 #include "thread_group.hpp"
 #include <cstddef>
 #include <tbb/task_group.h>
+#include "detail/schedule.hpp"
 
 #if defined(__GNUC__) && defined(__GXX_EXPERIMENTAL_CXX0X__)
 #include "detail/closure_cpp11.hpp"
+#include "detail/parallel_for_async_cpp11.hpp"
 #else
 #error "This file requires compiler support for c++11"
 #endif
@@ -104,8 +106,7 @@ template<typename Function, typename... Args>
   >::type
     async(std::size_t num_groups, std::size_t num_threads, Function&& f, Args&&... args)
 {
-  detail::linear_async(num_groups, num_threads, std::forward<Function>(f), std::forward<Args>(args)...);
-  return typename std::result_of<Function(Args...)>::type();
+  return detail::parallel_for_async(num_groups, num_threads, std::forward<Function>(f), std::forward<Args>(args)...);
 } // end async()
 
 
@@ -115,10 +116,8 @@ template<typename Function, typename... Args>
   >::type
     async(std::size_t num_threads, Function&& f, Args&&... args)
 {
-  // launch one group per thread for now
-  // XXX provide an intelligent decomposition which fills the machine while maximizing serial work
-  detail::linear_async(num_threads, 1, std::forward<Function>(f), std::forward<Args>(args)...);
-  return typename std::result_of<Function(Args...)>::type();
+  // since the threads need no barrier, launch one group per thread
+  return detail::parallel_for_async(num_threads, 1, std::forward<Function>(f), std::forward<Args>(args)...);
 }
 
 
