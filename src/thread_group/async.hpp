@@ -116,8 +116,8 @@ template<typename Function, typename... Args>
   >::type
     async(std::size_t num_threads, Function&& f, Args&&... args)
 {
-  // since the threads need no barrier, launch one group per thread
-  return detail::parallel_for_async(num_threads, 1, std::forward<Function>(f), std::forward<Args>(args)...);
+  auto schedule = detail::schedule_async(num_threads, std::forward<Function>(f), std::forward<Args>(args)...);
+  return detail::parallel_for_async(schedule.first, schedule.second, std::forward<Function>(f), std::forward<Args>(args)...);
 }
 
 

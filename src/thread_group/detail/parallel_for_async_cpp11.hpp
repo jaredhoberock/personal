@@ -59,6 +59,7 @@ template<typename Function, typename... Args>
 {
   using namespace parallel_for_async_detail;
 
+  // XXX investigate whether it makes sense to tune this 
   const std::size_t thread_groups_per_body = 1u;
 
   auto closure = detail::make_closure(std::forward<Function>(f),std::forward<Args>(args)...);
