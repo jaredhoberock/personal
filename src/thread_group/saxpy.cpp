@@ -1,6 +1,7 @@
 #include <iostream>
 #include "thread_group.hpp"
 #include "async.hpp"
+#include "../time_invocation/time_invocation.hpp"
 
 void saxpy(float a, float *x, float *y, std::size_t n)
 {
@@ -12,12 +13,12 @@ void saxpy(float a, float *x, float *y, std::size_t n)
   }
 }
 
-void my_saxpy(float a, float *x, float *y, std::size_t n)
+void async_saxpy(float a, float *x, float *y, std::size_t n)
 {
   test::async(n, saxpy, a, x, y, n);
 }
 
-void simple_saxpy(float a, float *x, float *y, std::size_t n)
+void serial_saxpy(float a, float *x, float *y, std::size_t n)
 {
   for(int i = 0; i < n; ++i)
   {
@@ -31,7 +32,8 @@ int main()
   auto a = 1.0f;
   std::vector<float> x(n), y(n);
 
-  my_saxpy(a, x.data(), y.data(), n);
+  std::cout << "serial_saxpy mean duration: " << time_invocation(1000, serial_saxpy, a, x.data(), y.data(), n) << std::endl;;
+  std::cout << "async_saxpy mean duration:  " << time_invocation(1000, async_saxpy, a, x.data(), y.data(), n) << std::endl;
 
   return 0;
 }
