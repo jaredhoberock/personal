@@ -122,7 +122,10 @@ Configuration
           host_backend=os.environ['HOST_BACKEND']
           device_backend=os.environ['DEVICE_BACKEND']
           targets = ['run_examples']
-          command = ['scons', '-j2', 'host_backend='+host_backend, 'device_backend='+device_backend] + targets
+          scons_command_name = scons
+          if os.name == 'nt':
+            scons_command_name += '.bat'
+          command = [scons_command_name, '-j2', 'host_backend='+host_backend, 'device_backend='+device_backend] + targets
           subprocess.check_call(command)
           ~~~
   
