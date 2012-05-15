@@ -22,13 +22,20 @@ GPU2: `sm_30`, probably GF 680
 Software
 --------
 
-OS (Windows 7 64b, Ubuntu 11.10 64b)
-CUDA Developer Driver r295
-CUDA Toolkit (4.2)
-g++ (4.6)
-scons
-git
-java
-ssh
-tbb
+OS Agnostic Software:
+* CUDA Toolkit (4.2)
+* CUDA Developer Driver r295
+* tbb
+* python
+* scons
+* git
+* java
+
+Ubuntu 11.10 64b Software:
+* g++ (4.6)
+* ssh
+
+Windows 7 64b Software:
+* pywin32
+* MSVC 2010 32b
 

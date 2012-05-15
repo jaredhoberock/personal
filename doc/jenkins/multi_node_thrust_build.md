@@ -122,7 +122,15 @@ Configuration
           host_backend=os.environ['HOST_BACKEND']
           device_backend=os.environ['DEVICE_BACKEND']
           targets = ['run_examples']
-          command = ['scons', '-j2', 'host_backend='+host_backend, 'device_backend='+device_backend] + targets
+          command = ['-j12', 'host_backend=' + host_backend, 'device_backend=' + device_backend] + targets
+          if os.name == 'nt':
+            # avoid launching through scons.bat on Windows - it creates lots of problems
+            scons_path = os.path.join(os.environ['PYTHON_PATH'], 'Scripts')
+            scons_path = os.path.join(scons_path, 'scons.py')
+            command = ['python', scons_path] + command
+          else:
+            command = ['scons'] + command
+          print 'python command:', command
           subprocess.check_call(command)
           ~~~
   
