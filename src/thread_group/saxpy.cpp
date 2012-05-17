@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include "thread_group.hpp"
 #include "async.hpp"
 #include "../time_invocation/time_invocation.hpp"
@@ -20,10 +21,18 @@ void async_saxpy(float a, float *x, float *y, std::size_t n)
 
 void serial_saxpy(float a, float *x, float *y, std::size_t n)
 {
-  for(int i = 0; i < n; ++i)
+  float *x_last = x + n;
+  for(; x != x_last; ++x, ++y)
   {
-    x[i] = a * x[i] + y[i];
+    *x = a * (*x) + *y;
   }
+}
+
+void serial_transform_saxpy(float a, float *x, float *y, std::size_t n)
+{
+  std::transform(x, x + n, y, x, [a](float xi, float yi){
+    return a * xi + yi;
+  });
 }
 
 int main()
@@ -33,6 +42,7 @@ int main()
   std::vector<float> x(n), y(n);
 
   std::cout << "serial_saxpy mean duration: " << time_invocation(1000, serial_saxpy, a, x.data(), y.data(), n) << std::endl;;
+  std::cout << "serial_transform_saxpy mean duration: " << time_invocation(1000, serial_transform_saxpy, a, x.data(), y.data(), n) << std::endl;;
   std::cout << "async_saxpy mean duration:  " << time_invocation(1000, async_saxpy, a, x.data(), y.data(), n) << std::endl;
 
   return 0;
