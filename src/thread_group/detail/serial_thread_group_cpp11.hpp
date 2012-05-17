@@ -34,10 +34,13 @@ class serial_thread_group
     template<typename Function, typename... Args>
       inline void exec(Function &&f, Args&&... args)
     {
+      const size_t sz = size();
+
       for(std::size_t thread_id = 0;
-          thread_id != size();
+          thread_id != sz;
           ++thread_id)
       {
+        // XXX this is pretty expensive
         set_current_thread_id(thread_id);
 
         // make & call closure
