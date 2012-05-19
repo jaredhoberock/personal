@@ -7,6 +7,12 @@ namespace test
 namespace detail
 {
 
+template<typename Function>
+  void apply_from_tuple(Function f, const std::tr1::tuple<> &)
+{
+  f();
+}
+
 template<typename Function, typename Arg1>
   void apply_from_tuple(Function f, const std::tr1::tuple<Arg1> &args)
 {

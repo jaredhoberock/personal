@@ -33,11 +33,14 @@ template<typename ThreadGroup, typename Function, typename Tuple>
         args(args)
     {}
 
-    void operator()(const tbb::blocked_range<std::size_t> &r) const
+    inline void operator()(const tbb::blocked_range<std::size_t> &r) const
     {
+      std::size_t group_id      = r.begin();
+      std::size_t last_group_id = r.end();
+
       // serially instantiate groups
-      for(std::size_t group_id = r.begin();
-          group_id != r.end();
+      for(;
+          group_id != last_group_id;
           ++group_id)
       {
         ThreadGroup(group_id,num_threads,f,args);
@@ -80,8 +83,12 @@ template<typename Function, typename Tuple>
 {
   using namespace parallel_for_async_detail;
 
-  // XXX investigate whether it makes sense to tune this 
-  const std::size_t thread_groups_per_body = 1u;
+  // XXX discover this programmatically
+  const std::size_t num_cores = 2;
+
+  // distribute one body per core
+  // this constant seems to have a large effect on the overhead of launch
+  const std::size_t thread_groups_per_body = num_groups / num_cores;
 
   // XXX consider deriving something from tbb::task instead -- we don't actually need a group of tasks
   tbb::task_group g;

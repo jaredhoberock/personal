@@ -11,12 +11,12 @@ namespace detail
 template<typename Function, typename Tuple>
   struct closure
 {
-  explicit closure(const Function &f, const Tuple& args)
+  inline explicit closure(const Function &f, const Tuple& args)
     : f(f),
       args(args)
   {}
 
-  void operator()()
+  inline void operator()()
   {
     apply_from_tuple(f, args);
   }
@@ -26,13 +26,13 @@ template<typename Function, typename Tuple>
 };
 
 template<typename Function, typename Tuple>
-  closure<Function,Tuple> make_closure(Function f, Tuple args)
+  inline closure<Function,Tuple> make_closure(Function f, Tuple args)
 {
   return closure<Function,Tuple>(f,args);
 }
 
 template<typename Function, typename Tuple>
-  closure<Function,Tuple>
+  inline closure<Function,Tuple>
     forward_as_closure(Function f, Tuple args)
 {
   return closure<Function,Tuple>(f,args);

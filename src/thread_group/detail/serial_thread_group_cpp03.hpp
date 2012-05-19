@@ -31,7 +31,8 @@ class serial_thread_group
     template<typename Function, typename Tuple>
       inline void exec(Function f, Tuple args)
     {
-      const size_t sz = size();
+      // ensure sure that no virtual function dispatch occurs for size()
+      const size_t sz = serial_thread_group::size();
 
       for(std::size_t thread_id = 0;
           thread_id != sz;

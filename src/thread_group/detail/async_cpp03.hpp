@@ -16,6 +16,13 @@ namespace test
 //  return detail::parallel_for_async(num_groups, num_threads, std::forward<Function>(f), std::forward<Args>(args)...);
 //} // end async()
 
+template<typename Function>
+  void async(std::size_t num_threads, Function f)
+{
+  std::tr1::tuple<> args;
+  std::pair<std::size_t,std::size_t> schedule = detail::schedule_async(num_threads, f, args);
+  return detail::parallel_for_async(schedule.first, schedule.second, f, args);
+}
 
 template<typename Function, typename Arg1>
   void async(std::size_t num_threads, Function f, Arg1 arg1)
