@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../thread_group.hpp"
-#include "closure_cpp11.hpp"
+#include "closure_cpp03.hpp"
 #include <utility>
 #include <vector>
 
@@ -22,11 +22,11 @@ class ucontext_thread_group
     static const std::size_t stack_size = 1<<16;
 
   public:
-    template<typename Function, typename... Args>
-      ucontext_thread_group(int id, int num_threads, Function &&f, Args&&... args)
+    template<typename Function, typename Tuple>
+      ucontext_thread_group(int id, int num_threads, Function f, Tuple args)
         : thread_group(id)
     {
-      exec(num_threads, std::forward<Function>(f), std::forward<Args>(args)...);
+      exec(num_threads, f, args);
     }
 
     virtual int size()
@@ -47,14 +47,14 @@ class ucontext_thread_group
       barrier();
     }
 
-    template<typename Function, typename... Args>
-      void exec(std::size_t num_threads, Function &&f, Args&&... args)
+    template<typename Function, typename Tuple>
+      void exec(std::size_t num_threads, Function f, Tuple args)
     {
       if(num_threads)
       {
         // begin by making a closure
-        auto closure = detail::make_closure(std::forward<Function>(f),std::forward<Args>(args)...);
-        typedef decltype(closure) closure_type;
+        typedef detail::closure<Function,Tuple> closure_type;
+        detail::closure<Function,Tuple> closure = detail::make_closure(f,args);
 
         // make a copy of the parameters for each thread
         // for arguments to makecontext

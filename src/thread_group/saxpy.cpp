@@ -28,17 +28,29 @@ void serial_saxpy(float a, float *x, float *y, std::size_t n)
   }
 }
 
+struct saxpy_functor
+{
+  float a;
+
+  saxpy_functor(float a)
+    : a(a)
+  {}
+
+  float operator()(float xi, float yi)
+  {
+    return a * xi + yi;
+  }
+};
+
 void serial_transform_saxpy(float a, float *x, float *y, std::size_t n)
 {
-  std::transform(x, x + n, y, x, [a](float xi, float yi){
-    return a * xi + yi;
-  });
+  std::transform(x, x + n, y, x, saxpy_functor(a));
 }
 
 int main()
 {
   std::size_t n = 1 << 20;
-  auto a = 1.0f;
+  float a = 1.0f;
   std::vector<float> x(n), y(n);
 
   std::cout << "serial_saxpy mean duration: " << time_invocation(1000, serial_saxpy, a, x.data(), y.data(), n) << std::endl;;

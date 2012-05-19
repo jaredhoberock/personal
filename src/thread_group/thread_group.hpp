@@ -102,6 +102,6 @@ int get_id()
 #if defined(__GNUC__) && defined(__GXX_EXPERIMENTAL_CXX0X__)
 #include "detail/ucontext_thread_group_cpp11.hpp"
 #else
-#error "This file requires compiler support for c++11"
+#include "detail/ucontext_thread_group_cpp03.hpp"
 #endif
 
