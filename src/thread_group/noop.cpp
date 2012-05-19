@@ -18,13 +18,6 @@ void async_noop(std::size_t n)
   test::async(n, noop_functor());
 }
 
-void serial_noop(std::size_t n)
-{
-  for(; n; --n)
-  {
-  }
-}
-
 struct noop_body
 {
   template<typename Range>
@@ -49,10 +42,7 @@ int main()
   std::size_t n = 1 << 20;
   std::vector<float> x(n), y(n);
 
-//  std::cout << "serial_noop mean duration: " << time_invocation(1000, serial_noop, n) << std::endl;
-//  std::cout << "async_noop mean duration:  " << time_invocation(1000, async_noop, n) << std::endl;
   std::cout << "async_noop mean duration:  " << time_invocation(1000, async_noop, n) << std::endl;
-
   std::cout << "noop parallel_for_each mean duration: " << time_invocation(1000, noop_parallel_for, n) << std::endl;
 
   return 0;
