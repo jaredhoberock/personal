@@ -5,9 +5,16 @@
 #include <utility>
 #include <vector>
 
+#ifndef _XOPEN_SOURCE
+#define _XOPEN_SOURCE_NEEDS_UNDEF
 #define _XOPEN_SOURCE
+#endif // _XOPEN_SOURCE
 #include <ucontext.h>
+
+#ifdef _XOPEN_SOURCE_NEEDS_UNDEF
 #undef _XOPEN_SOURCE
+#undef _XOPEN_SOURCE_NEEDS_UNDEF
+#endif // _XOPEN_SOURCE_NEEDS_UNDEF
 
 namespace test
 {
