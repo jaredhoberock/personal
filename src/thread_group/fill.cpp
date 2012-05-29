@@ -53,7 +53,7 @@ int main()
   std::vector<int> x(n);
 
   std::cout << "serial_loop_fill mean duration: " << time_invocation(1000, serial_loop_fill, x.data(), val, n) << std::endl;;
-  std::cout << "serial_std_transform_saxpy mean duration: " << time_invocation(1000, serial_std_fill, x.data(), val, n) << std::endl;;
+  std::cout << "serial_std_fill mean duration: " << time_invocation(1000, serial_std_fill, x.data(), val, n) << std::endl;;
   std::cout << "async_fill_fcn_ptr mean duration:  " << time_invocation(1000, async_fill_fcn_ptr, x.data(), val, n) << std::endl;
   std::cout << "async_fill_functor mean duration:  " << time_invocation(1000, async_fill_functor, x.data(), val, n) << std::endl;
 
