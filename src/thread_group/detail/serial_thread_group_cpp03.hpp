@@ -13,15 +13,9 @@ class serial_thread_group
   public:
     template<typename Function, typename Tuple>
       inline serial_thread_group(int id, int num_threads, Function f, Tuple args)
-        : thread_group(id),
-          m_size(num_threads)
+        : thread_group(id,num_threads)
     {
       exec(f, args);
-    }
-
-    inline int size()
-    {
-      return m_size;
     }
 
     inline void barrier() {}
@@ -31,8 +25,7 @@ class serial_thread_group
     template<typename Function, typename Tuple>
       inline void exec(Function f, Tuple args)
     {
-      // ensure sure that no virtual function dispatch occurs for size()
-      const size_t sz = serial_thread_group::size();
+      const size_t sz = size();
 
       for(std::size_t thread_id = 0;
           thread_id != sz;
@@ -48,8 +41,6 @@ class serial_thread_group
       // null the current thread_group
       this_thread_group::__singleton = 0;
     }
-
-    std::size_t m_size;
 };
 
 } // end detail

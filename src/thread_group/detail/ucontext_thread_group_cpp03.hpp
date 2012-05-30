@@ -32,14 +32,9 @@ class ucontext_thread_group
   public:
     template<typename Function, typename Tuple>
       ucontext_thread_group(int id, int num_threads, Function f, Tuple args)
-        : thread_group(id)
+        : thread_group(id,num_threads)
     {
-      exec(num_threads, f, args);
-    }
-
-    virtual int size()
-    {
-      return thread_state.size();
+      exec(f, args);
     }
 
     void barrier()
@@ -56,9 +51,9 @@ class ucontext_thread_group
     }
 
     template<typename Function, typename Tuple>
-      void exec(std::size_t num_threads, Function f, Tuple args)
+      void exec(Function f, Tuple args)
     {
-      if(num_threads)
+      if(size())
       {
         // begin by making a closure
         typedef detail::closure<Function,Tuple> closure_type;
@@ -68,14 +63,14 @@ class ucontext_thread_group
         // for arguments to makecontext
         typedef std::pair<ucontext_thread_group*,closure_type> exec_parms_t;
         void (*exec)(exec_parms_t *) = exec_thread<closure_type>;
-        std::vector<exec_parms_t> exec_parms(num_threads, std::make_pair(this,closure));
+        std::vector<exec_parms_t> exec_parms(size(), std::make_pair(this,closure));
 
         // save the return state
         state join_state;
         getcontext(&join_state);
         if(thread_state.empty())
         {
-          thread_state.resize(num_threads);
+          thread_state.resize(size());
 
           for(int i = 0; i < thread_state.size(); ++i)
           {

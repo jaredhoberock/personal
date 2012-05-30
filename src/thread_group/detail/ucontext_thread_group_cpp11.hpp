@@ -32,14 +32,9 @@ class ucontext_thread_group
   public:
     template<typename Function, typename... Args>
       ucontext_thread_group(int id, int num_threads, Function &&f, Args&&... args)
-        : thread_group(id)
+        : thread_group(id,num_threads)
     {
-      exec(num_threads, std::forward<Function>(f), std::forward<Args>(args)...);
-    }
-
-    virtual int size()
-    {
-      return thread_state.size();
+      exec(std::forward<Function>(f), std::forward<Args>(args)...);
     }
 
     void barrier()
@@ -58,7 +53,7 @@ class ucontext_thread_group
     template<typename Function, typename... Args>
       void exec(std::size_t num_threads, Function &&f, Args&&... args)
     {
-      if(num_threads)
+      if(size())
       {
         // begin by making a closure
         auto closure = detail::make_closure(std::forward<Function>(f),std::forward<Args>(args)...);
@@ -68,7 +63,7 @@ class ucontext_thread_group
         // for arguments to makecontext
         typedef std::pair<ucontext_thread_group*,closure_type> exec_parms_t;
         void (*exec)(exec_parms_t *) = exec_thread<closure_type>;
-        std::vector<exec_parms_t> exec_parms(num_threads, std::make_pair(this,closure));
+        std::vector<exec_parms_t> exec_parms(size(), std::make_pair(this,closure));
 
         // save the return state
         state join_state;

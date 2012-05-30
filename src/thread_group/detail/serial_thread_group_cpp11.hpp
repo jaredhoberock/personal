@@ -16,15 +16,9 @@ class serial_thread_group
   public:
     template<typename Function, typename... Args>
       inline serial_thread_group(int id, int num_threads, Function &&f, Args&&... args)
-        : thread_group(id),
-          m_size(num_threads)
+        : thread_group(id,num_threads)
     {
       exec(std::forward<Function>(f), std::forward<Args>(args)...);
-    }
-
-    inline int size()
-    {
-      return m_size;
     }
 
     inline void barrier() {}
@@ -50,8 +44,6 @@ class serial_thread_group
       // null the current thread_group
       this_thread_group::__singleton = 0;
     }
-
-    std::size_t m_size;
 };
 
 } // end detail

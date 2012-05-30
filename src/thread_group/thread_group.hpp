@@ -17,8 +17,8 @@ __thread thread_group *__singleton;
 class thread_group
 {
   public:
-    thread_group(int id)
-      : m_id(id),m_current_thread_id(-1)
+    thread_group(int id, int num_threads)
+      : m_id(id),m_current_thread_id(-1),m_size(num_threads)
     {
       this_thread_group::__singleton = this;
     }
@@ -32,7 +32,10 @@ class thread_group
 
     virtual void barrier() = 0;
 
-    virtual int size() = 0;
+    inline int size()
+    {
+      return m_size;
+    }
 
     int get_id() const
     {
@@ -60,6 +63,7 @@ class thread_group
   private:
     int m_id;
     int m_current_thread_id;
+    int m_size;
 }; // end thread_group
 
 namespace this_thread_group
