@@ -16,11 +16,11 @@ template<typename Function, typename... Args>
       i < num_trials;
       ++i)
   {
-    f(args...);
+    f(std::forward<Args&&>(args)...);
   }
   auto end = std::chrono::high_resolution_clock::now();
 
-  // return mean duration
-  return double((end - start).count()) / num_trials;
+  // return mean duration in msecs
+  return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 }
 
