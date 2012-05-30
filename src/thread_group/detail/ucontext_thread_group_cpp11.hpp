@@ -9,6 +9,7 @@
 #define _XOPEN_SOURCE_NEEDS_UNDEF
 #define _XOPEN_SOURCE
 #endif // _XOPEN_SOURCE
+
 #include <ucontext.h>
 
 #ifdef _XOPEN_SOURCE_NEEDS_UNDEF
