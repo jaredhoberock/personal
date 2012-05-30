@@ -48,14 +48,15 @@ void serial_std_fill(int *x, int val, std::size_t n)
 
 int main()
 {
-  std::size_t n = 1 << 20;
+  std::size_t n = 1 << 25;
   int val = 0;
   std::vector<int> x(n);
 
-  std::cout << "serial_loop_fill mean duration: " << time_invocation(1000, serial_loop_fill, x.data(), val, n) << std::endl;;
-  std::cout << "serial_std_fill mean duration: " << time_invocation(1000, serial_std_fill, x.data(), val, n) << std::endl;;
-  std::cout << "async_fill_fcn_ptr mean duration:  " << time_invocation(1000, async_fill_fcn_ptr, x.data(), val, n) << std::endl;
-  std::cout << "async_fill_functor mean duration:  " << time_invocation(1000, async_fill_functor, x.data(), val, n) << std::endl;
+  time_invocation(2, serial_loop_fill, x.data(), val, n);
+  time_invocation(2, async_fill_functor, x.data(), val, n);
+
+  std::cout << "serial_loop_fill mean duration: " << time_invocation(10, serial_loop_fill, x.data(), val, n) << std::endl;;
+  std::cout << "async_fill_functor mean duration:  " << time_invocation(10, async_fill_functor, x.data(), val, n) << std::endl;
 
   return 0;
 }
