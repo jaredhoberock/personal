@@ -65,22 +65,22 @@ class thread_group
 namespace this_thread_group
 {
 
-int current_thread_id()
+inline int current_thread_id()
 {
   return __singleton->current_thread_id();
 }
 
-int get_id()
+inline int get_id()
 {
   return __singleton->get_id();
 }
 
-void barrier()
+inline void barrier()
 {
   __singleton->barrier();
 }
 
-std::size_t size()
+inline std::size_t size()
 {
   __singleton->size();
 }
@@ -90,7 +90,7 @@ std::size_t size()
 namespace this_thread
 {
 
-int get_id()
+inline int get_id()
 {
   return this_thread_group::current_thread_id();
 }
