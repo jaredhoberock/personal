@@ -9,6 +9,7 @@
 #include <tr1/tuple>
 #include <tbb/task_group.h>
 #include "closure_cpp03.hpp"
+#include "thread_group_serializer_cpp03.hpp"
 
 namespace test
 {
@@ -20,31 +21,19 @@ namespace parallel_for_async_detail
 
 template<typename ThreadGroup, typename Function, typename Tuple>
   class body
+    : thread_group_serializer<ThreadGroup,Function,Tuple>
 {
+  typedef thread_group_serializer<ThreadGroup,Function,Tuple> super_t;
+
   public:
-    Function f;
-
-    std::size_t num_threads;
-    Tuple args;
-
     body(std::size_t num_threads, Function f, Tuple args)
-      : num_threads(num_threads),
-        f(f),
-        args(args)
+      : super_t(num_threads,f,args)
     {}
 
     inline void operator()(const tbb::blocked_range<std::size_t> &r) const
     {
-      std::size_t group_id      = r.begin();
-      std::size_t last_group_id = r.end();
-
-      // serially instantiate groups
-      for(;
-          group_id != last_group_id;
-          ++group_id)
-      {
-        ThreadGroup(group_id,num_threads,f,args);
-      }
+      // call the parent
+      super_t::operator()(r.begin(), r.end());
     }
 };
 
