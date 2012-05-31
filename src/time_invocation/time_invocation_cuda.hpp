@@ -3,7 +3,7 @@
 #include <cuda_runtime_api.h>
 
 template<typename Function>
-  double time_invocation(std::size_t num_trials, Function f)
+  double time_invocation_cuda(std::size_t num_trials, Function f)
 {
   cudaEvent_t start, stop;
   cudaEventCreate(&start);
@@ -20,7 +20,7 @@ template<typename Function>
   cudaThreadSynchronize();
 
   float msecs = 0;
-  cudaEventElapsedTime(&msecs, stop, start);
+  cudaEventElapsedTime(&msecs, start, stop);
 
   cudaEventDestroy(start);
   cudaEventDestroy(stop);
@@ -30,7 +30,7 @@ template<typename Function>
 }
 
 template<typename Function, typename Arg1>
-  double time_invocation(std::size_t num_trials, Function f, Arg1 arg1)
+  double time_invocation_cuda(std::size_t num_trials, Function f, Arg1 arg1)
 {
   cudaEvent_t start, stop;
   cudaEventCreate(&start);
@@ -47,7 +47,7 @@ template<typename Function, typename Arg1>
   cudaThreadSynchronize();
 
   float msecs = 0;
-  cudaEventElapsedTime(&msecs, stop, start);
+  cudaEventElapsedTime(&msecs, start, stop);
 
   cudaEventDestroy(start);
   cudaEventDestroy(stop);
@@ -57,7 +57,7 @@ template<typename Function, typename Arg1>
 }
 
 template<typename Function, typename Arg1, typename Arg2>
-  double time_invocation(std::size_t num_trials, Function f, Arg1 arg1, Arg2 arg2)
+  double time_invocation_cuda(std::size_t num_trials, Function f, Arg1 arg1, Arg2 arg2)
 {
   cudaEvent_t start, stop;
   cudaEventCreate(&start);
@@ -74,7 +74,7 @@ template<typename Function, typename Arg1, typename Arg2>
   cudaThreadSynchronize();
 
   float msecs = 0;
-  cudaEventElapsedTime(&msecs, stop, start);
+  cudaEventElapsedTime(&msecs, start, stop);
 
   cudaEventDestroy(start);
   cudaEventDestroy(stop);
@@ -84,7 +84,7 @@ template<typename Function, typename Arg1, typename Arg2>
 }
 
 template<typename Function, typename Arg1, typename Arg2, typename Arg3>
-  double time_invocation(std::size_t num_trials, Function f, Arg1 arg1, Arg2 arg2, Arg3 arg3)
+  double time_invocation_cuda(std::size_t num_trials, Function f, Arg1 arg1, Arg2 arg2, Arg3 arg3)
 {
   cudaEvent_t start, stop;
   cudaEventCreate(&start);
@@ -101,7 +101,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3>
   cudaThreadSynchronize();
 
   float msecs = 0;
-  cudaEventElapsedTime(&msecs, stop, start);
+  cudaEventElapsedTime(&msecs, start, stop);
 
   cudaEventDestroy(start);
   cudaEventDestroy(stop);
@@ -111,7 +111,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3>
 }
 
 template<typename Function, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
-  double time_invocation(std::size_t num_trials, Function f, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
+  double time_invocation_cuda(std::size_t num_trials, Function f, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
 {
   cudaEvent_t start, stop;
   cudaEventCreate(&start);
@@ -128,7 +128,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
   cudaThreadSynchronize();
 
   float msecs = 0;
-  cudaEventElapsedTime(&msecs, stop, start);
+  cudaEventElapsedTime(&msecs, start, stop);
 
   cudaEventDestroy(start);
   cudaEventDestroy(stop);
@@ -138,7 +138,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
 }
 
 template<typename Function, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
-  double time_invocation(std::size_t num_trials, Function f, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5)
+  double time_invocation_cuda(std::size_t num_trials, Function f, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5)
 {
   cudaEvent_t start, stop;
   cudaEventCreate(&start);
@@ -155,7 +155,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
   cudaThreadSynchronize();
 
   float msecs = 0;
-  cudaEventElapsedTime(&msecs, stop, start);
+  cudaEventElapsedTime(&msecs, start, stop);
 
   cudaEventDestroy(start);
   cudaEventDestroy(stop);
@@ -165,7 +165,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
 }
 
 template<typename Function, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6>
-  double time_invocation(std::size_t num_trials, Function f, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Arg6 arg6)
+  double time_invocation_cuda(std::size_t num_trials, Function f, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Arg6 arg6)
 {
   cudaEvent_t start, stop;
   cudaEventCreate(&start);
@@ -182,7 +182,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
   cudaThreadSynchronize();
 
   float msecs = 0;
-  cudaEventElapsedTime(&msecs, stop, start);
+  cudaEventElapsedTime(&msecs, start, stop);
 
   cudaEventDestroy(start);
   cudaEventDestroy(stop);
@@ -192,7 +192,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
 }
 
 template<typename Function, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6, typename Arg7>
-  double time_invocation(std::size_t num_trials, Function f, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Arg6 arg6, Arg7 arg7)
+  double time_invocation_cuda(std::size_t num_trials, Function f, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Arg6 arg6, Arg7 arg7)
 {
   cudaEvent_t start, stop;
   cudaEventCreate(&start);
@@ -209,7 +209,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
   cudaThreadSynchronize();
 
   float msecs = 0;
-  cudaEventElapsedTime(&msecs, stop, start);
+  cudaEventElapsedTime(&msecs, start, stop);
 
   cudaEventDestroy(start);
   cudaEventDestroy(stop);
