@@ -3,10 +3,12 @@
 #include "thread_group.hpp"
 #include "async.hpp"
 #include "../time_invocation/time_invocation.hpp"
+#include <cassert>
 
 inline void copy(int *src, int *dst, std::size_t n)
 {
-  int i = test::this_thread_group::get_id() * test::this_thread_group::size() + test::this_thread::get_id();
+  using namespace test;
+  const int i = this_thread_group::size() * this_thread_group::get_id() + test::this_thread::get_id();
 
   if(i < n)
   {
@@ -30,7 +32,7 @@ void async_copy_functor(int *src, int *dst, std::size_t n)
 void serial_copy(int *src, int *dst, std::size_t n)
 {
   int *src_last = src + n;
-  for(; src != src_last; ++src)
+  for(; src != src_last; ++src, ++dst)
   {
     *dst = *src;
   }
@@ -39,13 +41,31 @@ void serial_copy(int *src, int *dst, std::size_t n)
 int main()
 {
   std::size_t n = 1 << 20;
-  std::vector<int> src(n), dst(n);
+  std::vector<int> ref(n), src(n), dst(n);
 
-  time_invocation(2, serial_copy, src.data(), dst.data(), n);
-  time_invocation(2, async_copy_functor, src.data(), dst.data(), n);
+  for(std::size_t i = 0; i < n; ++i)
+  {
+    ref[i] = i;
+    src[i] = i;
+  }
 
-  std::cout << "serial_copy mean duration: " << time_invocation(1000, serial_copy, src.data(), dst.data(), n) << std::endl;;
-  std::cout << "async_copy_functor mean duration:  " << time_invocation(1000, async_copy_functor, src.data(), dst.data(), n) << std::endl;
+  std::fill(dst.begin(), dst.end(), 0);
+  time_invocation(1, serial_copy, src.data(), dst.data(), n);
+  assert(ref == dst);
+
+  double serial_time = time_invocation(1000, serial_copy, src.data(), dst.data(), n);
+
+  std::cout << "serial_copy mean duration: " << serial_time << std::endl;
+
+  std::fill(dst.begin(), dst.end(), 0);
+  time_invocation(1, async_copy_functor, src.data(), dst.data(), n);
+  assert(ref == dst);
+
+  double async_time = time_invocation(1000, async_copy_functor, src.data(), dst.data(), n);
+
+  std::cout << "async_copy_functor mean duration:  " << async_time << std::endl;
+
+  std::cout << "async penalty: " << async_time / serial_time << std::endl;
 
   return 0;
 }
