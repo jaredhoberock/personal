@@ -25,7 +25,7 @@ class thread_group
 
     virtual ~thread_group(){}
 
-    int current_thread_id()
+    inline int current_thread_id() const
     {
       return m_current_thread_id;
     }
@@ -37,7 +37,7 @@ class thread_group
       return m_size;
     }
 
-    int get_id() const
+    inline int get_id() const
     {
       return m_id;
     }
@@ -58,6 +58,11 @@ class thread_group
       int old_id = current_thread_id();
       m_current_thread_id = next_current_thread_id();
       return old_id;
+    }
+
+    void increment_current_thread_id(void)
+    {
+      ++m_current_thread_id;
     }
 
   private:
@@ -84,9 +89,9 @@ inline void barrier()
   __singleton->barrier();
 }
 
-inline std::size_t size()
+inline int size()
 {
-  __singleton->size();
+  return __singleton->size();
 }
 
 } // end this_thread_group
