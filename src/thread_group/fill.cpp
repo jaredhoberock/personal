@@ -3,14 +3,23 @@
 #include "thread_group.hpp"
 #include "async.hpp"
 #include "../time_invocation/time_invocation.hpp"
+#include <cassert>
 
 inline void fill(int *x, int val, std::size_t n)
 {
-  int i = test::this_thread_group::get_id() * test::this_thread_group::size() + test::this_thread::get_id();
+  using namespace test::this_thread_group;
+
+  const int gid         = get_id();
+  // XXX gcc miscompiles this or something
+  //const int num_threads = size();
+  const int num_threads = __singleton->size();
+  const int tid         = test::this_thread::get_id();
+
+  const int i = gid * num_threads + tid;
 
   if(i < n)
   {
-    *x = val;
+    x[i] = val;
   }
 }
 
@@ -48,15 +57,29 @@ void serial_std_fill(int *x, int val, std::size_t n)
 
 int main()
 {
-  std::size_t n = 1 << 25;
-  int val = 0;
-  std::vector<int> x(n);
+  std::size_t n = 1 << 20;
+  int val = 13;
+  std::vector<int> ref(n), x(n);
 
-  time_invocation(2, serial_loop_fill, x.data(), val, n);
-  time_invocation(2, async_fill_functor, x.data(), val, n);
+  std::fill(ref.begin(), ref.end(), val);
 
-  std::cout << "serial_loop_fill mean duration: " << time_invocation(10, serial_loop_fill, x.data(), val, n) << std::endl;;
-  std::cout << "async_fill_functor mean duration:  " << time_invocation(10, async_fill_functor, x.data(), val, n) << std::endl;
+  std::fill(x.begin(), x.end(), 0);
+  time_invocation(1, serial_loop_fill, x.data(), val, n);
+  assert(ref == x);
+
+  double serial_time = time_invocation(1000, serial_loop_fill, x.data(), val, n);
+
+  std::cout << "serial_loop_fill mean duration: " << serial_time << std::endl;
+
+  std::fill(x.begin(), x.end(), 0);
+  time_invocation(1, async_fill_functor, x.data(), val, n);
+  assert(ref == x);
+
+  double async_time = time_invocation(1000, serial_loop_fill, x.data(), val, n);
+
+  std::cout << "async_fill_functor mean duration:  " << async_time << std::endl;
+
+  std::cout << "async penalty: " << async_time / serial_time << std::endl;
 
   return 0;
 }
