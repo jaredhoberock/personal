@@ -17,7 +17,7 @@ template<typename Function, typename Arg1>
   clock_gettime(CLOCK_MONOTONIC, &end);
 
   double msecs = 1000. * double(end.tv_sec - start.tv_sec);
-  msecs += 1000000. * double(end.tv_nsec - start.tv_nsec);
+  msecs += double(end.tv_nsec - start.tv_nsec) / 1000000.;
 
   // return mean msecs
   return msecs / num_trials;
@@ -37,7 +37,7 @@ template<typename Function, typename Arg1, typename Arg2>
   clock_gettime(CLOCK_MONOTONIC, &end);
 
   double msecs = 1000. * double(end.tv_sec - start.tv_sec);
-  msecs += 1000000. * double(end.tv_nsec - start.tv_nsec);
+  msecs += double(end.tv_nsec - start.tv_nsec) / 1000000.;
 
   // return mean msecs
   return msecs / num_trials;
@@ -57,7 +57,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3>
   clock_gettime(CLOCK_MONOTONIC, &end);
 
   double msecs = 1000. * double(end.tv_sec - start.tv_sec);
-  msecs += 1000000. * double(end.tv_nsec - start.tv_nsec);
+  msecs += double(end.tv_nsec - start.tv_nsec) / 1000000.;
 
   // return mean msecs
   return msecs / num_trials;
@@ -77,7 +77,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
   clock_gettime(CLOCK_MONOTONIC, &end);
 
   double msecs = 1000. * double(end.tv_sec - start.tv_sec);
-  msecs += 1000000. * double(end.tv_nsec - start.tv_nsec);
+  msecs += double(end.tv_nsec - start.tv_nsec) / 1000000.;
 
   // return mean msecs
   return msecs / num_trials;
@@ -97,7 +97,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
   clock_gettime(CLOCK_MONOTONIC, &end);
 
   double msecs = 1000. * double(end.tv_sec - start.tv_sec);
-  msecs += 1000000. * double(end.tv_nsec - start.tv_nsec);
+  msecs += double(end.tv_nsec - start.tv_nsec) / 1000000.;
 
   // return mean msecs
   return msecs / num_trials;
@@ -117,7 +117,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
   clock_gettime(CLOCK_MONOTONIC, &end);
 
   double msecs = 1000. * double(end.tv_sec - start.tv_sec);
-  msecs += 1000000. * double(end.tv_nsec - start.tv_nsec);
+  msecs += double(end.tv_nsec - start.tv_nsec) / 1000000.;
 
   // return mean msecs
   return msecs / num_trials;
@@ -137,7 +137,7 @@ template<typename Function, typename Arg1, typename Arg2, typename Arg3, typenam
   clock_gettime(CLOCK_MONOTONIC, &end);
 
   double msecs = 1000. * double(end.tv_sec - start.tv_sec);
-  msecs += 1000000. * double(end.tv_nsec - start.tv_nsec);
+  msecs += double(end.tv_nsec - start.tv_nsec) / 1000000.;
 
   // return mean msecs
   return msecs / num_trials;
