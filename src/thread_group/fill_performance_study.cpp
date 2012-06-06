@@ -4,7 +4,7 @@
 #include <cassert>
 #include <vector>
 
-int g_i;
+static int g_i;
 
 inline void fill(int *dst, int val)
 {
